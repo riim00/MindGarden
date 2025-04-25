@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="mindgarden.controller.HomeViewController"
+            prefHeight="700.0" prefWidth="900.0"
+            style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);">
+
+    <!-- Header -->
+    <top>
+        <HBox alignment="CENTER" spacing="15"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <Text text="🌱" style="-fx-font-size: 36;"/>
+            <Label text="MindGarden" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
+                <font>
+                    <Font name="Verdana Bold" size="32.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+            <Label text="Welcome to your personal wellness space"
+                   style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #3c4043;">
+                <effect>
+                    <DropShadow color="#cccccc" radius="2" spread="0.1"/>
+                </effect>
+            </Label>
+
+            <Label text="Nurture your mental wellbeing"
+                   style="-fx-font-size: 16; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
+
+            <!-- Feature Cards -->
+            <HBox alignment="CENTER" spacing="40">
+                <!-- Mood Tracker -->
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                      prefWidth="220" prefHeight="250">
+                    <Label text="😊" style="-fx-font-size: 42;"/>
+                    <Label text="Mood Tracker" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1565c0;"/>
+                    <Label text="Track your emotions and discover patterns in your mood over time"
+                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+                    <Region prefHeight="10"/>
+                    <Button text="Open" onAction="#openMoodTracker"
+                            style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                        <effect>
+                            <DropShadow color="#bbdefb" radius="5" spread="0.1"/>
+                        </effect>
+                    </Button>
+                </VBox>
+
+                <!-- Journal -->
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: #e8f5e9; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                      prefWidth="220" prefHeight="250">
+                    <Label text="📓" style="-fx-font-size: 42;"/>
+                    <Label text="Journal" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #2e7d32;"/>
+                    <Label text="Write down your thoughts and reflect on your daily experiences"
+                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+                    <Region prefHeight="10"/>
+                    <Button text="Open" onAction="#openJournal"
+                            style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                        <effect>
+                            <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
+                        </effect>
+                    </Button>
+                </VBox>
+
+                <!-- Meditation -->
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: #fce4ec; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                      prefWidth="220" prefHeight="250">
+                    <Label text="🧘" style="-fx-font-size: 42;"/>
+                    <Label text="Meditation" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #c2185b;"/>
+                    <Label text="Practice mindfulness with guided meditation sessions"
+                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+                    <Region prefHeight="10"/>
+                    <Button text="Open" onAction="#openMeditation"
+                            style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                        <effect>
+                            <DropShadow color="#f8bbd0" radius="5" spread="0.1"/>
+                        </effect>
+                    </Button>
+                </VBox>
+            </HBox>
+
+            <!-- Wellness Tip -->
+            <VBox alignment="CENTER" spacing="15"
+                  style="-fx-background-color: #fff8e1; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+                  maxWidth="600">
+                <Label text="✨ Today's Wellness Tip" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ff6f00;"/>
+                <Label text="Take a moment to breathe deeply. Inhale for 4 counts, hold for 4, and exhale for 6. This simple exercise can help reduce stress and increase focus."
+                       wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <VBox alignment="CENTER" spacing="5"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15;">
+            <Label text="Take care of your mind, and watch it grow"
+                   style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #2e7d32;"/>
+            <Label text="MindGarden © 2025"
+                   style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
+        </VBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,162 @@
+/* ========== GENERAL VIEW LAYOUT ========== */
+.main-view {
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #ffffff);
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* ========== HEADER STYLES ========== */
+.header-bar {
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-background-radius: 0 0 20 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.3, 0, 5);
+}
+
+.blue-header {
+    -fx-background-color: linear-gradient(to right, #89f7fe, #66a6ff);
+}
+
+.green-header {
+    -fx-background-color: linear-gradient(to right, #b9fbc0, #a0e9ff);
+}
+
+/* ========== TITLES ========== */
+.title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+}
+
+.subtext {
+    -fx-font-size: 15px;
+    -fx-text-fill: #666;
+}
+
+/* ========== CARDS & CONTAINERS ========== */
+.card {
+    -fx-padding: 30;
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 15, 0.3, 0, 8);
+    -fx-border-color: #eeeeee;
+    -fx-border-radius: 25;
+    -fx-max-width: 720;
+}
+
+.glass {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0.2, 0, 4);
+    -fx-padding: 20;
+}
+
+/* ========== BUTTONS ========== */
+.button-blue {
+    -fx-background-color: linear-gradient(to right, #42a5f5, #1e88e5);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30;
+    -fx-padding: 10 24;
+    -fx-effect: dropshadow(gaussian, #90caf9, 5, 0.1, 0, 2);
+    -fx-cursor: hand;
+}
+
+.button-green {
+    -fx-background-color: linear-gradient(to right, #66bb6a, #43a047);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30;
+    -fx-padding: 10 24;
+    -fx-effect: dropshadow(gaussian, #a5d6a7, 5, 0.1, 0, 2);
+    -fx-cursor: hand;
+}
+
+/* Hover effect for all buttons */
+.button-blue:hover,
+.button-green:hover,
+.mood-button-happy:hover,
+.mood-button-neutral:hover,
+.mood-button-sad:hover,
+.mood-button-angry:hover,
+.mood-button-tired:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.2, 0, 2);
+}
+
+/* ========== TEXT AREAS & INPUTS ========== */
+.text-area {
+    -fx-background-radius: 15;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 15;
+    -fx-padding: 12;
+    -fx-font-size: 15px;
+    -fx-background-color: white;
+}
+
+/* ========== MOOD BUTTONS ========== */
+.mood-button-happy {
+    -fx-background-color: #ffeb3b;
+    -fx-text-fill: #212121;
+    -fx-background-radius: 30;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #fff9c4, 5, 0.2, 0, 2);
+}
+
+.mood-button-neutral {
+    -fx-background-color: #b0bec5;
+    -fx-text-fill: #212121;
+    -fx-background-radius: 30;
+    -fx-font-weight: bold;
+}
+
+.mood-button-sad {
+    -fx-background-color: #90caf9;
+    -fx-text-fill: #212121;
+    -fx-background-radius: 30;
+    -fx-font-weight: bold;
+}
+
+.mood-button-angry {
+    -fx-background-color: #ef5350;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-font-weight: bold;
+}
+
+.mood-button-tired {
+    -fx-background-color: #ce93d8;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-font-weight: bold;
+}
+
+/* ========== OPTIONAL EXTRAS ========== */
+.accent-bar {
+    -fx-background-color: linear-gradient(to right, #42a5f5, #1e88e5);
+    -fx-background-radius: 5;
+    -fx-pref-height: 3;
+    -fx-max-width: 100;
+    -fx-margin-top: 10;
+}
+
+/* ========== DARK MODE READY (if toggled) ========== */
+.dark-mode .main-view {
+    -fx-background-color: #121212;
+}
+
+.dark-mode .card {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #333;
+}
+
+.dark-mode .text-area {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #ddd;
+}
