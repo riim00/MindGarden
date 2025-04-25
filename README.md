@@ -50,7 +50,8 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 👨‍💻 For Developers
 📁 Project Structure
-<pre> MindGarden/ ├── src/ │ └── mindgarden/ │ └── controller/ │ ├── HomeViewController.java │ ├── JournalViewController.java │ ├── MeditationViewController.java │ └── MoodTrackerViewController.java ├── resources/ │ ├── view/ │ │ ├── HomeView.fxml │ │ ├── JournalView.fxml │ │ ├── MeditationView.fxml │ │ └── MoodTrackerView.fxml │ └── style/ │ └── theme.css ├── .gitignore └── README.md </pre>
+![image](https://github.com/user-attachments/assets/802049b8-811e-493b-98de-e80a5b155bef)
+
 
    🤝 Contributing
 - Fork this repository
