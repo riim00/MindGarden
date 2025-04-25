@@ -49,7 +49,7 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 
 👨‍💻 For Developers
-📁 Project Structure
+ - 📁 Project Structure
 
 
 
@@ -66,11 +66,11 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 
 💡 Team Ideas / Future Features
-⏱ Animated breathing timer
-🎵 Background ambient sounds
-🌙 Dark mode toggle
-📊 Mood analytics dashboard
-🧠 AI-guided journaling prompts
+- ⏱ Animated breathing timer
+- 🎵 Background ambient sounds
+- 🌙 Dark mode toggle
+- 📊 Mood analytics dashboard
+- 🧠 AI-guided journaling prompts
 
 
 
