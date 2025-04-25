@@ -54,7 +54,7 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 - Push to the branch (git push origin feature/amazing-idea)
 - Open a Pull Request
 
-
+---
 
 💡 Team Ideas / Future Features
 - ⏱ Animated breathing timer
