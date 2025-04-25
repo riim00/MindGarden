@@ -50,6 +50,9 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 👨‍💻 For Developers
 📁 Project Structure
+
+
+
 ![image](https://github.com/user-attachments/assets/802049b8-811e-493b-98de-e80a5b155bef)
 
 
