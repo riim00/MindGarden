@@ -48,25 +48,9 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
      java --module-path PATH_TO_FX --add-modules javafx.controls,javafx.fxml mindgarden.MainApp
 
 
-  👨‍💻 For Developers
-🗂 Directory Structure:
-MindGarden/
-├── src/
-│   └── mindgarden/
-│       └── controller/
-│           ├── HomeViewController.java
-│           ├── MoodTrackerViewController.java
-│           ├── JournalViewController.java
-│           └── MeditationViewController.java
-├── resources/
-│   ├── view/
-│   │   ├── HomeView.fxml
-│   │   ├── MoodTrackerView.fxml
-│   │   ├── JournalView.fxml
-│   │   └── MeditationView.fxml
-│   └── style/
-│       └── theme.css
-└── .gitignore
+👨‍💻 For Developers
+📁 Project Structure
+<pre> MindGarden/ ├── src/ │ └── mindgarden/ │ └── controller/ │ ├── HomeViewController.java │ ├── JournalViewController.java │ ├── MeditationViewController.java │ └── MoodTrackerViewController.java ├── resources/ │ ├── view/ │ │ ├── HomeView.fxml │ │ ├── JournalView.fxml │ │ ├── MeditationView.fxml │ │ └── MoodTrackerView.fxml │ └── style/ │ └── theme.css ├── .gitignore └── README.md </pre>
 
    🤝 Contributing
 - Fork this repository
