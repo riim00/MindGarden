@@ -22,15 +22,6 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 ---
 
-## 📷 Screenshots
-
-| Home View | Mood Tracker |
-|-----------|--------------|
-| ![home](docs/screenshots/home.png) | ![tracker](docs/screenshots/tracker.png) |
-
-(Add your own screenshots to `docs/screenshots/` and link here)
-
----
 
 ## 🚀 How to Run
 
