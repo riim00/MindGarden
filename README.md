@@ -38,7 +38,7 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
      javac --module-path PATH_TO_FX --add-modules javafx.controls,javafx.fxml -d out src/mindgarden/MainApp.java
      java --module-path PATH_TO_FX --add-modules javafx.controls,javafx.fxml mindgarden.MainApp
 
-
+---
 👨‍💻 For Developers
  - 📁 Project Structure
 
@@ -46,7 +46,7 @@ MindGarden is a beautifully designed JavaFX desktop application focused on **men
 
 ![image](https://github.com/user-attachments/assets/802049b8-811e-493b-98de-e80a5b155bef)
 
-
+---
    🤝 Contributing
 - Fork this repository
 - Create your branch (git checkout -b feature/amazing-idea)
