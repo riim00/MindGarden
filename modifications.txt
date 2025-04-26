@@ -1,0 +1,83 @@
+# MindGarden Database Backend Implementation Summary
+
+This file summarizes the changes made to implement the SQLite database backend for storing Mood Tracker and Journal data.
+
+## Prerequisites / Setup Steps (Before Running)
+
+Before compiling and running the application with the new database features, ensure the following steps are completed:
+
+1.  **Install Java:** Make sure you have Java 17 or later installed.
+2.  **Install JavaFX SDK:** Download and extract the JavaFX SDK suitable for your operating system and Java version (from [GluonHQ](https://gluonhq.com/products/javafx/)). Note the path to the `lib` folder within the extracted SDK.
+3.  **Download SQLite JDBC Driver:** Download the `sqlite-jdbc.jar` file from the [SQLite JDBC GitHub releases](https://github.com/xerial/sqlite-jdbc/releases). Choose a recent version compatible with your Java version.
+4.  **Configure Classpath/Module Path:**
+    *   **If using an IDE (like VS Code):**
+        *   Add the downloaded `sqlite-jdbc.jar` to your project's referenced libraries or classpath.
+        *   Configure the project's Java Build Path or VM options to include the JavaFX SDK libraries. This typically involves:
+            *   Adding the path to the JavaFX SDK's `lib` folder to the module path.
+            *   Specifying the required JavaFX modules (e.g., `--module-path /path/to/javafx-sdk-xx/lib --add-modules javafx.controls,javafx.fxml`). Consult your IDE's documentation for specifics.
+    *   **If compiling/running from the terminal:**
+        *   Include the `sqlite-jdbc.jar` in the classpath (`-cp` option).
+        *   Use the `--module-path` and `--add-modules` options as shown in the original `README.md` to include the JavaFX SDK, replacing `PATH_TO_FX` with the actual path to your JavaFX SDK's `lib` folder.
+        *   Example Compile: `javac --module-path PATH_TO_FX -cp sqlite-jdbc.jar -d out src/mindgarden/**/*.java` (adjust path separators and wildcards for your OS)
+        *   Example Run: `java --module-path PATH_TO_FX -cp out;sqlite-jdbc.jar mindgarden.MainApp` (adjust path separators for your OS)
+
+## 1. Database Choice & Setup
+- **Database:** SQLite was chosen as the database system.
+- **Driver:** Requires the `sqlite-jdbc.jar` driver to be added to the project's classpath.
+- **Database File:** Data will be stored in `MindGarden/database/mindgarden.db`. The `database` directory is created automatically if it doesn't exist.
+
+## 2. New Files Created
+
+- **`MindGarden/src/mindgarden/db/DatabaseManager.java`**:
+    - Handles establishing the connection to the SQLite database (`database/mindgarden.db`).
+    - Contains SQL statements to create the `MoodEntries` and `JournalEntries` tables if they don't already exist upon connection.
+    - Provides utility methods for connecting and closing resources.
+
+- **`MindGarden/src/mindgarden/model/MoodEntry.java`**:
+    - A Plain Old Java Object (POJO) representing a single mood entry.
+    - Contains fields: `id` (int), `moodType` (String), `timestamp` (LocalDateTime).
+
+- **`MindGarden/src/mindgarden/db/MoodEntryDAO.java`**:
+    - Data Access Object for `MoodEntry`.
+    - Contains methods:
+        - `addMoodEntry(String moodType)`: Inserts a new mood entry into the `MoodEntries` table.
+        - `getAllMoodEntries()`: Retrieves all mood entries from the database, ordered by timestamp descending.
+
+- **`MindGarden/src/mindgarden/model/JournalEntry.java`**:
+    - A POJO representing a single journal entry.
+    - Contains fields: `id` (int), `content` (String), `timestamp` (LocalDateTime).
+
+- **`MindGarden/src/mindgarden/db/JournalEntryDAO.java`**:
+    - Data Access Object for `JournalEntry`.
+    - Contains methods:
+        - `addJournalEntry(String content)`: Inserts a new journal entry into the `JournalEntries` table.
+        - `getAllJournalEntries()`: Retrieves all journal entries from the database, ordered by timestamp descending.
+
+## 3. Modified Files
+
+- **`MindGarden/src/mindgarden/controller/MoodTrackerViewController.java`**:
+    - Added imports for `MoodEntryDAO` and `MoodEntry`.
+    - Instantiated `MoodEntryDAO` in the `initialize` method.
+    - Modified `initialize()` to call a new `loadMoodHistory()` method.
+    - Created `loadMoodHistory()` method:
+        - Fetches all entries using `moodEntryDAO.getAllMoodEntries()`.
+        - Clears the existing display list (`moodHistoryDisplay`).
+        - Resets and recalculates mood counts for the PieChart based on fetched data.
+        - Populates the `moodHistoryDisplay` list with formatted entries from the database.
+        - Updates the PieChart.
+    - Modified `saveMoodEntry()`:
+        - Now calls `moodEntryDAO.addMoodEntry(selectedMood)` to save the entry to the database.
+        - Calls `loadMoodHistory()` after successful save to refresh the UI.
+        - No longer manually adds entries to the `moodHistoryDisplay` list.
+
+- **`MindGarden/src/mindgarden/controller/JournalViewController.java`**:
+    - Added import for `JournalEntryDAO`.
+    - Added an `initialize()` method to instantiate `JournalEntryDAO`.
+    - Modified `saveEntry()`:
+        - Now calls `journalEntryDAO.addJournalEntry(entryContent)` to save the entry to the database.
+        - Clears the text area upon successful save.
+        - Removed the previous `System.out.println` for the saved entry.
+
+## 4. Pending Configuration
+- **JavaFX SDK:** The project needs to be configured correctly in the IDE (e.g., VS Code) to recognize the JavaFX libraries and resolve import errors. This involves setting the module path and adding required modules (like `javafx.controls`, `javafx.fxml`).
+- **SQLite JDBC Driver:** The `sqlite-jdbc.jar` file must be downloaded and added to the project's classpath for database connectivity to work.
