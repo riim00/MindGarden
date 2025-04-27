@@ -160,3 +160,23 @@
     -fx-background-color: #2a2a2a;
     -fx-text-fill: #ddd;
 }
+
+/* Aurora Background */
+.aurora-background {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #a18cd1, #fbc2eb);
+    -fx-background-radius: 0;
+}
+
+/* Animation Panes */
+#auroraPane, #sparklesPane {
+    -fx-background-color: transparent;
+}
+
+/* Ensure content doesn't block animations */
+#mainPane, #mainPane > * {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane, .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}

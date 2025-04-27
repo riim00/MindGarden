@@ -1,140 +1,373 @@
 package mindgarden.controller;
 
+import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.util.Duration;
 import mindgarden.MainApp;
-import mindgarden.db.MoodEntryDAO; // Added DAO import
-import mindgarden.model.MoodEntry; // Added Model import
+import mindgarden.db.MoodEntryDAO;
+import mindgarden.model.MoodEntry;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List; // Added List import
-import java.util.Map;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MoodTrackerViewController {
 
-    @FXML
-    private TextArea moodNotes;
+    private static final Random RANDOM = new Random();
+    private static final int MAX_ANIMATIONS = 120;
+    private static final double AMBIENT_VOLUME = 0.2;
+    private static final int SPARKLE_COUNT = 30;
+    private static final int SHOOTING_STAR_COUNT = 20;
 
-    @FXML
-    private ListView<String> moodHistoryList;
+    @FXML private Pane auroraPane;
+    @FXML private Pane sparklesPane;
+    @FXML private Pane moodAnimationPane;
+    @FXML private BorderPane mainPane;
+    @FXML private Label selectedMoodLabel;
+    @FXML private TextArea moodNotes;
+    @FXML private PieChart moodPieChart;
+    @FXML private ListView<String> moodHistoryList;
+    @FXML private HBox moodButtonsBox;
+    @FXML private LineChart<Number, Number> moodTrendChart;
 
-    @FXML
-    private PieChart moodPieChart;
+    private final MoodEntryDAO moodEntryDAO = new MoodEntryDAO();
+    private final ObservableList<String> moodHistoryDisplay = FXCollections.observableArrayList();
+    private final Map<String, Color> moodColors = new HashMap<>();
+    private final Map<String, Integer> moodValues = new HashMap<>();
+    private final List<Animation> activeAnimations = new ArrayList<>();
+    private MediaPlayer mediaPlayer;
 
-    @FXML
-    private Label selectedMoodLabel;
     private String selectedMood = "";
-    private ObservableList<String> moodHistoryDisplay = FXCollections.observableArrayList(); // Renamed for clarity
-    private Map<String, Integer> moodCounts = new HashMap<>();
-    private MoodEntryDAO moodEntryDAO; // DAO instance
-
-    // Formatter for display
-    private static final DateTimeFormatter DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @FXML
     public void initialize() {
-        moodEntryDAO = new MoodEntryDAO(); // Initialize DAO
+        initializeMoodMaps();
+        setupUIComponents();
+        startVisualEffects();
+        playAmbientMusic();
+        loadMoodHistory();
+    }
+
+    private void initializeMoodMaps() {
+        moodColors.put("😍 Excellent", Color.LIMEGREEN);
+        moodColors.put("😊 Happy", Color.DODGERBLUE);
+        moodColors.put("😐 Neutral", Color.GOLD);
+        moodColors.put("😔 Sad", Color.GRAY);
+        moodColors.put("😡 Angry", Color.RED);
+
+        moodValues.put("😍 Excellent", 5);
+        moodValues.put("😊 Happy", 4);
+        moodValues.put("😐 Neutral", 3);
+        moodValues.put("😔 Sad", 2);
+        moodValues.put("😡 Angry", 1);
+    }
+
+    private void setupUIComponents() {
         moodHistoryList.setItems(moodHistoryDisplay);
         selectedMoodLabel.setText("Selected: None");
+        setupMoodButtonActions();
+    }
 
-        // Initialize mood counts map (can be dynamic based on buttons later if needed)
-        moodCounts.put("😊 Happy", 0);
-        moodCounts.put("😐 Neutral", 0);
-        moodCounts.put("😔 Sad", 0);
-        moodCounts.put("😡 Angry", 0);
-        moodCounts.put("😴 Tired", 0);
+    private void startVisualEffects() {
+        initializeAurora();
+        initializeSparkles();
+        launchShootingStars(SHOOTING_STAR_COUNT);
+        startBreathingGlow();
+    }
 
-        loadMoodHistory(); // Load data from DB on initialization
+    private void loadMoodHistory() {
+        moodHistoryDisplay.clear();
+        List<MoodEntry> entries = moodEntryDAO.getAllMoodEntries();
+
+        entries.stream()
+                .map(entry -> String.format("%s - %s (%s)",
+                        entry.getTimestamp().toLocalDate(),
+                        entry.getMoodType(),
+                        Optional.ofNullable(entry.getNotes()).orElse("")))
+                .forEach(moodHistoryDisplay::add);
+
+        updatePieChart(entries);
+        updateMoodTrendChart(entries);
+    }
+
+    private void updatePieChart(List<MoodEntry> entries) {
+        Map<String, Long> moodCounts = entries.stream()
+                .collect(Collectors.groupingBy(MoodEntry::getMoodType, Collectors.counting()));
+
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                moodCounts.entrySet().stream()
+                        .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
+                        .collect(Collectors.toList())
+        );
+
+        moodPieChart.setData(pieChartData);
+    }
+
+    private void updateMoodTrendChart(List<MoodEntry> entries) {
+        moodTrendChart.getData().clear();
+
+        NumberAxis yAxis = (NumberAxis) moodTrendChart.getYAxis();
+        yAxis.setLabel("");
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(6);
+        yAxis.setTickUnit(1);
+        yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
+            @Override
+            public String toString(Number object) {
+                return switch (object.intValue()) {
+                    case 5 -> "😍 Excellent";
+                    case 4 -> "😊 Happy";
+                    case 3 -> "😐 Neutral";
+                    case 2 -> "😔 Sad";
+                    case 1 -> "😡 Angry";
+                    default -> "";
+                };
+            }
+        });
+
+        NumberAxis xAxis = (NumberAxis) moodTrendChart.getXAxis();
+        xAxis.setLabel("Entries (Oldest to Recent)");
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(entries.size() + 1);
+        xAxis.setTickUnit(1);
+        xAxis.setForceZeroInRange(false);
+
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+        List<MoodEntry> reversedEntries = new ArrayList<>(entries);
+        Collections.reverse(reversedEntries);
+
+        int index = 1;
+        for (MoodEntry entry : reversedEntries) {
+            int moodValue = moodValues.getOrDefault(entry.getMoodType(), 3);
+            XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(index++, moodValue);
+
+            String color = toHexString(moodColors.getOrDefault(entry.getMoodType(), Color.GRAY));
+            Circle circle = new Circle(7, Color.web(color));
+            dataPoint.setNode(circle);
+
+            series.getData().add(dataPoint);
+        }
+
+        moodTrendChart.getData().add(series);
+
+        moodTrendChart.applyCss();
+        Set<Node> lines = moodTrendChart.lookupAll(".chart-series-line");
+        for (Node line : lines) {
+            line.setStyle("-fx-stroke: transparent;");
+        }
+    }
+
+    private String toHexString(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
+    }
+
+    @FXML
+    private void saveMoodEntry() {
+        if (selectedMood.isEmpty()) {
+            showAlert("No Mood Selected", "Please select a mood before saving.");
+            return;
+        }
+
+        String notes = moodNotes.getText().trim();
+        if (moodEntryDAO.addMoodEntryWithNotes(selectedMood, notes)) {
+            showAlert("Success", "Mood entry saved!");
+            moodNotes.clear();
+            loadMoodHistory();
+        } else {
+            showAlert("Error", "Failed to save mood entry.");
+        }
+    }
+
+    private void setupMoodButtonActions() {
+        moodButtonsBox.getChildren().stream()
+                .filter(node -> node instanceof Button)
+                .map(node -> (Button) node)
+                .forEach(moodButton -> {
+                    moodButton.setOnAction(e -> {
+                        selectedMood = moodButton.getText();
+                        selectedMoodLabel.setText("Selected: " + selectedMood);
+                        playButtonAnimation(moodButton);
+                    });
+                });
+    }
+
+    private void initializeAurora() {
+        auroraPane.setStyle("-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #a18cd1, #fbc2eb);");
+    }
+
+    private void initializeSparkles() {
+        for (int i = 0; i < SPARKLE_COUNT; i++) {
+            Circle sparkle = createSparkle();
+            sparklesPane.getChildren().add(sparkle);
+            setupSparkleAnimations(sparkle);
+        }
+    }
+
+    private Circle createSparkle() {
+        double width = sparklesPane.getWidth() > 0 ? sparklesPane.getWidth() : 900;
+        double height = sparklesPane.getHeight() > 0 ? sparklesPane.getHeight() : 700;
+
+        Circle sparkle = new Circle(
+                RANDOM.nextDouble(1, 3),
+                Color.rgb(255, 255, 255, RANDOM.nextDouble(0.5, 1.0))
+        );
+        sparkle.setCenterX(RANDOM.nextDouble(width));
+        sparkle.setCenterY(RANDOM.nextDouble(height));
+        return sparkle;
+    }
+
+    private void setupSparkleAnimations(Circle sparkle) {
+        TranslateTransition floatUp = new TranslateTransition(
+                Duration.seconds(20 + RANDOM.nextDouble() * 20), sparkle);
+        floatUp.setByY(-200);
+        floatUp.setCycleCount(Animation.INDEFINITE);
+        addManagedAnimation(floatUp);
+        floatUp.play();
+
+        FadeTransition twinkle = new FadeTransition(
+                Duration.seconds(2 + RANDOM.nextDouble() * 2), sparkle);
+        twinkle.setFromValue(0.3);
+        twinkle.setToValue(1.0);
+        twinkle.setAutoReverse(true);
+        twinkle.setCycleCount(Animation.INDEFINITE);
+        addManagedAnimation(twinkle);
+        twinkle.play();
+    }
+
+    private void launchShootingStars(int count) {
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(5 + RANDOM.nextDouble() * 5),
+                        e -> createShootingStar()));
+        timeline.setCycleCount(count);
+        addManagedAnimation(timeline);
+        timeline.play();
+    }
+
+    private void createShootingStar() {
+        double width = sparklesPane.getWidth() > 0 ? sparklesPane.getWidth() : 900;
+        double height = sparklesPane.getHeight() > 0 ? sparklesPane.getHeight() : 700;
+
+        Line shootingStar = new Line(0, 0, 50, 0);
+        shootingStar.setStroke(Color.WHITE);
+        shootingStar.setStrokeWidth(2);
+        shootingStar.setOpacity(0.8);
+
+        sparklesPane.getChildren().add(shootingStar);
+        shootingStar.setStartX(RANDOM.nextDouble(width));
+        shootingStar.setStartY(RANDOM.nextDouble(height / 2));
+        shootingStar.setEndX(shootingStar.getStartX() + 50);
+        shootingStar.setEndY(shootingStar.getStartY());
+
+        TranslateTransition move = new TranslateTransition(
+                Duration.seconds(1 + RANDOM.nextDouble()), shootingStar);
+        move.setByX(300);
+        move.setByY(150);
+        move.setOnFinished(e -> sparklesPane.getChildren().remove(shootingStar));
+        addManagedAnimation(move);
+        move.play();
+    }
+
+    private void startBreathingGlow() {
+        ScaleTransition breathe = new ScaleTransition(Duration.seconds(6), auroraPane);
+        breathe.setFromX(1.0);
+        breathe.setFromY(1.0);
+        breathe.setToX(1.05);
+        breathe.setToY(1.05);
+        breathe.setCycleCount(Animation.INDEFINITE);
+        breathe.setAutoReverse(true);
+        addManagedAnimation(breathe);
+        breathe.play();
+    }
+
+    private void playAmbientMusic() {
+        try {
+            String[] possiblePaths = {
+                    "src/main/resources/sounds/ambient.mp3",
+                    "resources/sounds/ambient.mp3",
+                    "sounds/ambient.mp3"
+            };
+
+            Optional<File> soundFile = Arrays.stream(possiblePaths)
+                    .map(File::new)
+                    .filter(File::exists)
+                    .findFirst();
+
+            if (soundFile.isPresent()) {
+                Media sound = new Media(soundFile.get().toURI().toString());
+                mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                mediaPlayer.setVolume(AMBIENT_VOLUME);
+                mediaPlayer.play();
+            } else {
+                System.out.println("Silent fallback audio active.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error playing ambient music: " + e.getMessage());
+        }
+    }
+
+    private void addManagedAnimation(Animation animation) {
+        activeAnimations.add(animation);
+        if (activeAnimations.size() > MAX_ANIMATIONS) {
+            Animation oldest = activeAnimations.remove(0);
+            oldest.stop();
+        }
+    }
+
+    private void playButtonAnimation(Button moodButton) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), moodButton);
+        st.setByX(0.1);
+        st.setByY(0.1);
+        st.setCycleCount(2);
+        st.setAutoReverse(true);
+        st.play();
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
     private void goBack() {
         try {
+            cleanupResources();
             MainApp.changeScene("HomeView.fxml");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error changing scene: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void selectMood(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-        selectedMood = clickedButton.getText();
-        selectedMoodLabel.setText("Selected: " + selectedMood);
-        System.out.println("Selected mood: " + selectedMood);
-    }
+    private void cleanupResources() {
+        activeAnimations.forEach(Animation::stop);
+        activeAnimations.clear();
 
-    @FXML
-    private void saveMoodEntry() {
-        if (!selectedMood.isEmpty()) {
-            // Save to database
-            boolean success = moodEntryDAO.addMoodEntry(selectedMood);
-
-            if (success) {
-                System.out.println("Mood entry saved successfully.");
-                // Reload history from DB to show the new entry
-                loadMoodHistory();
-
-                // Reset fields
-                moodNotes.clear(); // Note: moodNotes is not currently saved to DB
-                selectedMoodLabel.setText("Selected: None");
-                selectedMood = "";
-            } else {
-                System.err.println("Failed to save mood entry.");
-                // Optionally show an error message to the user
-            }
-        } else {
-             System.out.println("No mood selected to save.");
-             // Optionally show a message to the user
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
         }
-    }
-
-    /**
-     * Loads mood history from the database and updates the UI components.
-     */
-    private void loadMoodHistory() {
-        List<MoodEntry> entries = moodEntryDAO.getAllMoodEntries();
-        moodHistoryDisplay.clear();
-        moodCounts.replaceAll((k, v) -> 0); // Reset counts before recounting
-
-        for (MoodEntry entry : entries) {
-            String formattedDateTime = entry.getTimestamp().format(DISPLAY_FORMATTER);
-            String displayEntry = formattedDateTime + " - " + entry.getMoodType();
-            moodHistoryDisplay.add(displayEntry); // Add to the display list
-
-            // Update counts for pie chart - need to handle potential new mood types if UI changes
-            String moodKey = entry.getMoodType(); // Assuming moodType matches the keys like "😊 Happy"
-             if (moodCounts.containsKey(moodKey)) {
-                 moodCounts.put(moodKey, moodCounts.get(moodKey) + 1);
-             } else {
-                 // Handle case where a mood type from DB doesn't match predefined keys
-                 System.err.println("Warning: Mood type '" + moodKey + "' from DB not found in predefined map.");
-                 // Optionally add it dynamically: moodCounts.put(moodKey, 1);
-             }
-        }
-
-        updatePieChart(); // Update chart with new counts
-    }
-
-    private void updatePieChart() {
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-
-        for (Map.Entry<String, Integer> entry : moodCounts.entrySet()) {
-            if (entry.getValue() > 0) {
-                String moodName = entry.getKey().split(" ")[1]; // Get the mood name without emoji
-                pieChartData.add(new PieChart.Data(moodName, entry.getValue()));
-            }
-        }
-
-        moodPieChart.setData(pieChartData);
     }
 }

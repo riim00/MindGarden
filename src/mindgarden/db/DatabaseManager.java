@@ -17,7 +17,8 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS MoodEntries (
                 entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 mood_type TEXT NOT NULL,
-                entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                notes TEXT
             );
             """;
 
@@ -30,8 +31,6 @@ public class DatabaseManager {
             """;
     // --- End Table Creation SQL ---
 
-
-    // Ensure the database directory exists
     static {
         File dbFolder = new File(DB_FOLDER_PATH);
         if (!dbFolder.exists()) {
@@ -39,13 +38,11 @@ public class DatabaseManager {
                 System.out.println("Database directory created: " + dbFolder.getAbsolutePath());
             } else {
                 System.err.println("Failed to create database directory: " + dbFolder.getAbsolutePath());
-                // Consider throwing an exception or handling this more robustly
             }
         } else {
-             System.out.println("Database directory already exists: " + dbFolder.getAbsolutePath());
+            System.out.println("Database directory already exists: " + dbFolder.getAbsolutePath());
         }
     }
-
 
     /**
      * Establishes a connection to the SQLite database.
@@ -55,22 +52,15 @@ public class DatabaseManager {
      * @throws SQLException if a database access error occurs.
      */
     public static Connection connect() throws SQLException {
-        Connection conn = null;
         try {
-            // Load the SQLite JDBC driver (optional for modern JDBC)
-            // Class.forName("org.sqlite.JDBC");
-
-            conn = DriverManager.getConnection(DB_URL);
+            Connection conn = DriverManager.getConnection(DB_URL);
             System.out.println("Connection to SQLite established: " + DB_URL);
-
-            // Create tables if they don't exist
             createTablesIfNotExist(conn);
-
+            return conn;
         } catch (SQLException e) {
             System.err.println("Database connection error: " + e.getMessage());
-            throw e; // Re-throw the exception to be handled by the caller
+            throw e;
         }
-        return conn;
     }
 
     /**
@@ -80,28 +70,25 @@ public class DatabaseManager {
      */
     private static void createTablesIfNotExist(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
-            // Execute CREATE TABLE statements
             stmt.execute(CREATE_MOOD_TABLE_SQL);
             System.out.println("Checked/Created MoodEntries table.");
-
             stmt.execute(CREATE_JOURNAL_TABLE_SQL);
             System.out.println("Checked/Created JournalEntries table.");
-
-            // Add more table creations here if needed in the future
-
         } catch (SQLException e) {
             System.err.println("Error creating tables: " + e.getMessage());
-            // Consider more robust error handling
         }
     }
 
-    // Optional: Add methods for closing resources if needed frequently outside DAOs
+    /**
+     * Safely closes AutoCloseable resources.
+     *
+     * @param resource The resource to close.
+     */
     public static void closeQuietly(AutoCloseable resource) {
         if (resource != null) {
             try {
                 resource.close();
             } catch (Exception e) {
-                // Log or ignore
                 System.err.println("Error closing resource: " + e.getMessage());
             }
         }

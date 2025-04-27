@@ -1,7 +1,6 @@
 package mindgarden.db;
 
 import mindgarden.model.MoodEntry;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,80 +13,92 @@ import java.util.List;
  */
 public class MoodEntryDAO {
 
-    // Using ISO-8601 format which SQLite understands well for DATETIME
     private static final DateTimeFormatter SQLITE_DATETIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     /**
-     * Adds a new mood entry to the database.
-     * The entry's timestamp is set by the database default (CURRENT_TIMESTAMP).
+     * Adds a new mood entry without notes.
      *
-     * @param moodType The type of mood recorded (e.g., "Happy").
+     * @param moodType The type of mood recorded.
      * @return true if the insertion was successful, false otherwise.
      */
     public boolean addMoodEntry(String moodType) {
-        String sql = "INSERT INTO MoodEntries(mood_type) VALUES(?)";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        return addMoodEntryWithNotes(moodType, null);
+    }
 
-        try {
-            conn = DatabaseManager.connect();
-            pstmt = conn.prepareStatement(sql);
+    /**
+     * Adds a new mood entry with optional notes.
+     *
+     * @param moodType The mood type (e.g., Happy, Sad).
+     * @param notes    Optional additional notes (can be null).
+     * @return true if insertion successful, false otherwise.
+     */
+    public boolean addMoodEntryWithNotes(String moodType, String notes) {
+        String sql = "INSERT INTO MoodEntries (mood_type, entry_timestamp, notes) VALUES (?, CURRENT_TIMESTAMP, ?)";
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, moodType);
+
+            if (notes != null && !notes.trim().isEmpty()) {
+                pstmt.setString(2, notes);
+            } else {
+                pstmt.setNull(2, Types.VARCHAR);
+            }
+
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
+
         } catch (SQLException e) {
-            System.err.println("Error adding mood entry: " + e.getMessage());
+            System.err.println("Error adding mood entry with notes: " + e.getMessage());
             return false;
-        } finally {
-            DatabaseManager.closeQuietly(pstmt);
-            DatabaseManager.closeQuietly(conn);
         }
     }
 
     /**
-     * Retrieves all mood entries from the database, ordered by timestamp descending.
+     * Retrieves all mood entries ordered by timestamp descending.
      *
-     * @return A list of MoodEntry objects. Returns an empty list if none are found or an error occurs.
+     * @return List of MoodEntry.
      */
     public List<MoodEntry> getAllMoodEntries() {
-        String sql = "SELECT entry_id, mood_type, entry_timestamp FROM MoodEntries ORDER BY entry_timestamp DESC";
         List<MoodEntry> entries = new ArrayList<>();
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
+        String sql = "SELECT entry_id, mood_type, entry_timestamp, notes FROM MoodEntries ORDER BY entry_timestamp DESC";
 
-        try {
-            conn = DatabaseManager.connect();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
+        try (Connection conn = DatabaseManager.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 int id = rs.getInt("entry_id");
                 String moodType = rs.getString("mood_type");
-                // SQLite stores DATETIME as TEXT in ISO format by default with CURRENT_TIMESTAMP
                 String timestampStr = rs.getString("entry_timestamp");
-                LocalDateTime timestamp = LocalDateTime.parse(timestampStr.replace(" ", "T"), SQLITE_DATETIME_FORMATTER); // Adjust format if needed
+                LocalDateTime timestamp = parseTimestamp(timestampStr);
+                String notes = rs.getString("notes");
 
-                entries.add(new MoodEntry(id, moodType, timestamp));
+                MoodEntry entry = new MoodEntry(id, moodType, timestamp, notes);
+                entries.add(entry);
             }
+
         } catch (SQLException e) {
             System.err.println("Error retrieving mood entries: " + e.getMessage());
-            // Return empty list on error
         } catch (Exception e) {
             System.err.println("Error parsing timestamp or creating MoodEntry: " + e.getMessage());
-             // Return empty list on error
         }
-        finally {
-            DatabaseManager.closeQuietly(rs);
-            DatabaseManager.closeQuietly(stmt);
-            DatabaseManager.closeQuietly(conn);
-        }
+
         return entries;
     }
 
-    // --- Potential future methods ---
-    // public List<MoodEntry> getMoodEntriesByDateRange(LocalDateTime start, LocalDateTime end) { ... }
-    // public boolean deleteMoodEntry(int id) { ... }
-    // public boolean updateMoodEntry(MoodEntry entry) { ... }
-
+    /**
+     * Parses a timestamp string safely.
+     *
+     * @param timestampStr The timestamp string.
+     * @return LocalDateTime parsed, or now() if parsing fails.
+     */
+    private LocalDateTime parseTimestamp(String timestampStr) {
+        try {
+            return LocalDateTime.parse(timestampStr.replace(" ", "T"), SQLITE_DATETIME_FORMATTER);
+        } catch (Exception e) {
+            System.err.println("Error parsing timestamp: " + e.getMessage());
+            return LocalDateTime.now();
+        }
+    }
 }
