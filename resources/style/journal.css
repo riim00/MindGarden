@@ -1,0 +1,232 @@
+/* MindGarden Journal Application Stylesheet
+ * This CSS file contains styling for the enhanced journal application
+ * It uses modern design principles with a focus on readability and user experience
+ */
+
+/* ========== GLOBAL STYLES ========== */
+* {
+    -fx-font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+.main-container {
+    -fx-background-color: linear-gradient(to bottom, #f0f7f2, #fdfdfd);
+}
+
+.main-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 0;
+}
+
+.main-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.main-content {
+    -fx-padding: 40 20;
+}
+
+/* ========== BUTTON STYLES ========== */
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 8;
+}
+
+.icon-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-radius: 50%;
+}
+
+.primary-button {
+    -fx-background-color: #43a047;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 12 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(67, 160, 71, 0.3), 5, 0, 0, 2);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2e7d32;
+    -fx-effect: dropshadow(three-pass-box, rgba(67, 160, 71, 0.5), 8, 0, 0, 4);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.secondary-button {
+    -fx-background-color: #f5f9f5;
+    -fx-text-fill: #5f6368;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 12 25;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 20;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+}
+
+.view-button {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.view-button:hover {
+    -fx-background-color: #c8e6c9;
+}
+
+.view-all-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1976d2;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.view-all-button:hover {
+    -fx-background-color: rgba(25, 118, 210, 0.1);
+    -fx-background-radius: 20;
+}
+
+.view-all-text {
+    -fx-text-fill: #1976d2;
+    -fx-font-weight: bold;
+}
+
+.arrow-icon {
+    -fx-font-size: 16;
+    -fx-fill: #1976d2;
+}
+
+.inspiration-button {
+    -fx-background-color: rgba(255, 193, 7, 0.2);
+    -fx-text-fill: #ff8f00;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.inspiration-button:hover {
+    -fx-background-color: rgba(255, 193, 7, 0.3);
+}
+
+.button-icon {
+    -fx-font-size: 16;
+}
+
+.analytics-button {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #3c4043;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.analytics-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* ========== NAVIGATION BAR ========== */
+.nav-bar {
+    -fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1);
+    -fx-padding: 15 25;
+}
+
+.back-button-circle {
+    -fx-fill: rgba(255, 255, 255, 0.7);
+}
+
+.nav-icon {
+    -fx-font-size: 18;
+    -fx-fill: #2e7d32;
+}
+
+.app-title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+}
+
+.logo-container {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 50%;
+    -fx-padding: 5;
+}
+
+.search-container {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+    -fx-min-width: 200;
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-padding: 5 0;
+}
+
+.search-icon {
+    -fx-font-size: 14;
+    -fx-fill: #5f6368;
+}
+
+.notification-button {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 50%;
+}
+
+.user-avatar {
+    -fx-cursor: hand;
+}
+
+.avatar-text {
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-fill: #3c4043;
+}
+
+/* ========== TAB NAVIGATION ========== */
+.tabs-container {
+    -fx-background-color: #f5f9f5;
+    -fx-padding: 5 20;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tab-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5f6368;
+    -fx-background-radius: 20;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-min-width: 100;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.tab-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab-selected {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+}
+
+/* ========== JOURNAL ENTRY CARD ========== */
+.entry-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 30
+}

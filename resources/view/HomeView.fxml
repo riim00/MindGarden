@@ -5,6 +5,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -12,105 +17,254 @@
             prefHeight="700.0" prefWidth="900.0"
             style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);">
 
-    <!-- Header -->
+    <!-- Header with Navigation -->
     <top>
-        <HBox alignment="CENTER" spacing="15"
-              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
-            <Text text="🌱" style="-fx-font-size: 36;"/>
-            <Label text="MindGarden" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
-                <font>
-                    <Font name="Verdana Bold" size="32.0"/>
-                </font>
-            </Label>
-        </HBox>
+        <VBox>
+            <HBox alignment="CENTER" spacing="15"
+                  style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                <Text text="🌱" style="-fx-font-size: 36;"/>
+                <Label text="MindGarden" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
+                    <font>
+                        <Font name="Verdana Bold" size="32.0"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="20" alignment="CENTER_RIGHT">
+                    <Button text="Settings" styleClass="nav-button" onAction="#openSettings"
+                            style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
+                    <Button text="Help" styleClass="nav-button" onAction="#openHelp"
+                            style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
+                    <StackPane>
+                        <Circle radius="18" fill="#43a047" />
+                        <Text text="JS" fill="WHITE" style="-fx-font-weight: bold;" />
+                    </StackPane>
+                </HBox>
+            </HBox>
+
+            <!-- Quick Stats Bar -->
+            <HBox alignment="CENTER" spacing="40" style="-fx-background-color: rgba(255,255,255,0.7); -fx-padding: 10 15;">
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Streak:" style="-fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+                    <Label text="7 days" style="-fx-text-fill: #43a047;"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Today's Mood:" style="-fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+                    <Label text="😊 Happy" style="-fx-text-fill: #1976d2;"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Last Meditation:" style="-fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+                    <Label text="Yesterday" style="-fx-text-fill: #ec407a;"/>
+                </HBox>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Journal Entries:" style="-fx-font-weight: bold; -fx-text-fill: #5f6368;"/>
+                    <Label text="24" style="-fx-text-fill: #43a047;"/>
+                </HBox>
+            </HBox>
+        </VBox>
     </top>
 
     <!-- Main Content -->
     <center>
-        <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
-            <Label text="Welcome to your personal wellness space"
-                   style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #3c4043;">
-                <effect>
-                    <DropShadow color="#cccccc" radius="2" spread="0.1"/>
-                </effect>
-            </Label>
-
-            <Label text="Nurture your mental wellbeing"
-                   style="-fx-font-size: 16; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
-
-            <!-- Feature Cards -->
-            <HBox alignment="CENTER" spacing="40">
-                <!-- Mood Tracker -->
-                <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                      prefWidth="220" prefHeight="250">
-                    <Label text="😊" style="-fx-font-size: 42;"/>
-                    <Label text="Mood Tracker" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1565c0;"/>
-                    <Label text="Track your emotions and discover patterns in your mood over time"
-                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
-                    <Region prefHeight="10"/>
-                    <Button text="Open" onAction="#openMoodTracker"
-                            style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox alignment="CENTER" spacing="30" style="-fx-padding: 20 40 40 40;">
+                <!-- Greeting Section with Time-Based Message -->
+                <VBox alignment="CENTER" spacing="5">
+                    <Label fx:id="greetingLabel" text="Good to see you back"
+                           style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #3c4043;">
                         <effect>
-                            <DropShadow color="#bbdefb" radius="5" spread="0.1"/>
+                            <DropShadow color="#cccccc" radius="2" spread="0.1"/>
                         </effect>
-                    </Button>
+                    </Label>
+                    <Label text="Nurture your mental wellbeing today"
+                           style="-fx-font-size: 16; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
                 </VBox>
 
-                <!-- Journal -->
-                <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: #e8f5e9; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                      prefWidth="220" prefHeight="250">
-                    <Label text="📓" style="-fx-font-size: 42;"/>
-                    <Label text="Journal" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #2e7d32;"/>
-                    <Label text="Write down your thoughts and reflect on your daily experiences"
-                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
-                    <Region prefHeight="10"/>
-                    <Button text="Open" onAction="#openJournal"
-                            style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
-                        <effect>
-                            <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
-                        </effect>
-                    </Button>
-                </VBox>
+                <!-- Feature Cards -->
+                <HBox alignment="CENTER" spacing="40">
+                    <!-- Mood Tracker Card (Enhanced) -->
+                    <VBox alignment="CENTER" spacing="15"
+                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="220" prefHeight="280">
+                        <Label text="😊" style="-fx-font-size: 42;"/>
+                        <Label text="Mood Tracker" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1565c0;"/>
+                        <Label text="Track your emotions and discover patterns in your mood over time"
+                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
 
-                <!-- Meditation -->
-                <VBox alignment="CENTER" spacing="15"
-                      style="-fx-background-color: #fce4ec; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                      prefWidth="220" prefHeight="250">
-                    <Label text="🧘" style="-fx-font-size: 42;"/>
-                    <Label text="Meditation" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #c2185b;"/>
-                    <Label text="Practice mindfulness with guided meditation sessions"
-                           wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
-                    <Region prefHeight="10"/>
-                    <Button text="Open" onAction="#openMeditation"
-                            style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
-                        <effect>
-                            <DropShadow color="#f8bbd0" radius="5" spread="0.1"/>
-                        </effect>
-                    </Button>
-                </VBox>
-            </HBox>
+                        <!-- Mini Mood Chart -->
+                        <PieChart fx:id="moodMiniChart" legendVisible="false" prefHeight="80" prefWidth="120"
+                                  style="-fx-pie-label-visible: false; -fx-background-color: transparent;" />
 
-            <!-- Wellness Tip -->
-            <VBox alignment="CENTER" spacing="15"
-                  style="-fx-background-color: #fff8e1; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);"
-                  maxWidth="600">
-                <Label text="✨ Today's Wellness Tip" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ff6f00;"/>
-                <Label text="Take a moment to breathe deeply. Inhale for 4 counts, hold for 4, and exhale for 6. This simple exercise can help reduce stress and increase focus."
-                       wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+                        <Button text="Open Tracker" onAction="#openMoodTracker"
+                                style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                            <effect>
+                                <DropShadow color="#bbdefb" radius="5" spread="0.1"/>
+                            </effect>
+                        </Button>
+                    </VBox>
+
+                    <!-- Journal Card (Enhanced) -->
+                    <VBox alignment="CENTER" spacing="15"
+                          style="-fx-background-color: #e8f5e9; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="220" prefHeight="280">
+                        <Label text="📓" style="-fx-font-size: 42;"/>
+                        <Label text="Journal" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #2e7d32;"/>
+                        <Label text="Write down your thoughts and reflect on your daily experiences"
+                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+
+                        <!-- Recent Journal Preview -->
+                        <VBox style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 8; -fx-max-height: 80; -fx-min-height: 80;">
+                            <Label text="Latest Entry: May 2" style="-fx-font-size: 10; -fx-text-fill: #757575;" />
+                            <Label text="Today I felt a sense of accomplishment after..."
+                                   style="-fx-font-size: 11; -fx-text-fill: #424242;" wrapText="true" />
+                        </VBox>
+
+                        <Button text="Open Journal" onAction="#openJournal"
+                                style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                            <effect>
+                                <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
+                            </effect>
+                        </Button>
+                    </VBox>
+
+                    <!-- Meditation Card (Enhanced) -->
+                    <VBox alignment="CENTER" spacing="15"
+                          style="-fx-background-color: #fce4ec; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="220" prefHeight="280">
+                        <Label text="🧘" style="-fx-font-size: 42;"/>
+                        <Label text="Meditation" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #c2185b;"/>
+                        <Label text="Practice mindfulness with guided meditation sessions"
+                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+
+                        <!-- Meditation Sessions -->
+                        <HBox spacing="5" alignment="CENTER">
+                            <VBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 5; -fx-min-width: 60;">
+                                <Label text="5" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #c2185b;" />
+                                <Label text="min" style="-fx-font-size: 10; -fx-text-fill: #757575;" />
+                            </VBox>
+                            <VBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 5; -fx-min-width: 60;">
+                                <Label text="10" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #c2185b;" />
+                                <Label text="min" style="-fx-font-size: 10; -fx-text-fill: #757575;" />
+                            </VBox>
+                            <VBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 5; -fx-min-width: 60;">
+                                <Label text="20" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #c2185b;" />
+                                <Label text="min" style="-fx-font-size: 10; -fx-text-fill: #757575;" />
+                            </VBox>
+                        </HBox>
+
+                        <Button text="Start Session" onAction="#openMeditation"
+                                style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                            <effect>
+                                <DropShadow color="#f8bbd0" radius="5" spread="0.1"/>
+                            </effect>
+                        </Button>
+                    </VBox>
+                </HBox>
+
+                <!-- Wellness Dashboard -->
+                <HBox alignment="CENTER" spacing="30">
+                    <!-- Wellness Tip (Enhanced) -->
+                    <VBox alignment="CENTER" spacing="15" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #fff8e1; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="✨" style="-fx-font-size: 24;"/>
+                            <Label text="Today's Wellness Tip" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ff6f00;"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button text="Next Tip" onAction="#getNextTip"
+                                    style="-fx-background-color: transparent; -fx-text-fill: #ff6f00; -fx-font-size: 12;" />
+                        </HBox>
+                        <Label text="Take a moment to breathe deeply. Inhale for 4 counts, hold for 4, and exhale for 6. This simple exercise can help reduce stress and increase focus."
+                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
+                    </VBox>
+
+                    <!-- Weekly Progress -->
+                    <VBox alignment="CENTER" spacing="10"
+                          style="-fx-background-color: #e0f7fa; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+                          prefWidth="300">
+                        <Label text="Weekly Progress" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #0097a7;"/>
+                        <BarChart fx:id="weeklyProgressChart" legendVisible="false" animated="false" prefHeight="120" prefWidth="250"
+                                  style="-fx-background-color: transparent; -fx-tick-label-fill: #757575;">
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" style="-fx-tick-label-fill: #757575;" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" autoRanging="false" upperBound="3" tickUnit="1" minorTickVisible="false"
+                                            style="-fx-tick-label-fill: transparent;" />
+                            </yAxis>
+                        </BarChart>
+                        <HBox alignment="CENTER" spacing="15">
+                            <HBox alignment="CENTER" spacing="5">
+                                <Circle radius="5" fill="#1976d2" />
+                                <Label text="Mood" style="-fx-font-size: 11; -fx-text-fill: #757575;" />
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="5">
+                                <Circle radius="5" fill="#43a047" />
+                                <Label text="Journal" style="-fx-font-size: 11; -fx-text-fill: #757575;" />
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="5">
+                                <Circle radius="5" fill="#ec407a" />
+                                <Label text="Meditation" style="-fx-font-size: 11; -fx-text-fill: #757575;" />
+                            </HBox>
+                        </HBox>
+                    </VBox>
+                </HBox>
+
+                <!-- Goal Setting -->
+                <VBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: #f3e5f5; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);"
+                      maxWidth="680">
+                    <Label text="🎯 Weekly Goals" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #7b1fa2;"/>
+
+                    <HBox spacing="15" alignment="CENTER">
+                        <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-min-width: 200;">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <CheckBox fx:id="meditationGoalCheck" />
+                                <Label text="Meditate 3 times" style="-fx-text-fill: #5f6368;"/>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="1/3" style="-fx-text-fill: #9575cd; -fx-font-weight: bold;"/>
+                            </HBox>
+                            <ProgressBar progress="0.33" prefWidth="200" style="-fx-accent: #9575cd;" />
+                        </VBox>
+
+                        <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-min-width: 200;">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <CheckBox fx:id="journalGoalCheck" />
+                                <Label text="Journal 5 days" style="-fx-text-fill: #5f6368;"/>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label text="2/5" style="-fx-text-fill: #9575cd; -fx-font-weight: bold;"/>
+                            </HBox>
+                            <ProgressBar progress="0.4" prefWidth="200" style="-fx-accent: #9575cd;" />
+                        </VBox>
+
+                        <Button text="Set New Goal" onAction="#openGoalSetting"
+                                style="-fx-background-color: #9575cd; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15;">
+                            <effect>
+                                <DropShadow color="#d1c4e9" radius="5" spread="0.1"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
             </VBox>
-        </VBox>
+        </ScrollPane>
     </center>
 
     <!-- Footer -->
     <bottom>
-        <VBox alignment="CENTER" spacing="5"
+        <HBox alignment="CENTER" spacing="30"
               style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15;">
             <Label text="Take care of your mind, and watch it grow"
                    style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #2e7d32;"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="About" styleClass="footer-link" onAction="#openAbout"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+                <Button text="Privacy" styleClass="footer-link" onAction="#openPrivacy"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+                <Button text="Contact" styleClass="footer-link" onAction="#openContact"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+            </HBox>
+            <Region HBox.hgrow="ALWAYS" />
             <Label text="MindGarden © 2025"
                    style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-        </VBox>
+        </HBox>
     </bottom>
 </BorderPane>

@@ -4,13 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.io.File;
 
 public class DatabaseManager {
 
-    private static final String DB_FOLDER_PATH = "database"; // Relative to project root
-    private static final String DB_NAME = "mindgarden.db";
-    private static final String DB_URL = "jdbc:sqlite:" + DB_FOLDER_PATH + File.separator + DB_NAME;
+    // ✅ Chemin absolu vers le fichier SQLite que tu veux utiliser
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/rimta/MindGarden/database/mindgarden.db";
 
     // --- Table Creation SQL ---
     private static final String CREATE_MOOD_TABLE_SQL = """
@@ -31,65 +29,52 @@ public class DatabaseManager {
             """;
     // --- End Table Creation SQL ---
 
-    static {
-        File dbFolder = new File(DB_FOLDER_PATH);
-        if (!dbFolder.exists()) {
-            if (dbFolder.mkdirs()) {
-                System.out.println("Database directory created: " + dbFolder.getAbsolutePath());
-            } else {
-                System.err.println("Failed to create database directory: " + dbFolder.getAbsolutePath());
-            }
-        } else {
-            System.out.println("Database directory already exists: " + dbFolder.getAbsolutePath());
-        }
-    }
-
     /**
-     * Establishes a connection to the SQLite database.
-     * Creates the database file and necessary tables if they don't exist.
+     * Établit une connexion à la base SQLite.
+     * Crée la base et les tables si elles n'existent pas encore.
      *
-     * @return A Connection object to the database.
-     * @throws SQLException if a database access error occurs.
+     * @return une connexion active à la base de données.
+     * @throws SQLException en cas d’erreur d’accès à la base.
      */
     public static Connection connect() throws SQLException {
         try {
             Connection conn = DriverManager.getConnection(DB_URL);
-            System.out.println("Connection to SQLite established: " + DB_URL);
+            System.out.println("✅ Connexion établie avec la base : " + DB_URL);
             createTablesIfNotExist(conn);
             return conn;
         } catch (SQLException e) {
-            System.err.println("Database connection error: " + e.getMessage());
+            System.err.println("❌ Erreur de connexion à la base : " + e.getMessage());
             throw e;
         }
     }
 
     /**
-     * Creates the database tables if they do not already exist.
+     * Crée les tables nécessaires si elles n'existent pas.
      *
-     * @param conn The database connection.
+     * @param conn la connexion active.
      */
     private static void createTablesIfNotExist(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(CREATE_MOOD_TABLE_SQL);
-            System.out.println("Checked/Created MoodEntries table.");
+            System.out.println("✅ Table MoodEntries vérifiée/créée.");
             stmt.execute(CREATE_JOURNAL_TABLE_SQL);
-            System.out.println("Checked/Created JournalEntries table.");
+            System.out.println("✅ Table JournalEntries vérifiée/créée.");
         } catch (SQLException e) {
-            System.err.println("Error creating tables: " + e.getMessage());
+            System.err.println("❌ Erreur lors de la création des tables : " + e.getMessage());
         }
     }
 
     /**
-     * Safely closes AutoCloseable resources.
+     * Ferme un élément AutoCloseable (comme ResultSet ou Statement) sans exception.
      *
-     * @param resource The resource to close.
+     * @param resource l’objet à fermer.
      */
     public static void closeQuietly(AutoCloseable resource) {
         if (resource != null) {
             try {
                 resource.close();
             } catch (Exception e) {
-                System.err.println("Error closing resource: " + e.getMessage());
+                System.err.println("⚠️ Erreur lors de la fermeture : " + e.getMessage());
             }
         }
     }

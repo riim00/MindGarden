@@ -1,6 +1,7 @@
 package mindgarden.controller;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import mindgarden.MainApp;
 import mindgarden.db.MoodEntryDAO;
@@ -43,14 +45,19 @@ public class MoodTrackerViewController {
     @FXML private ListView<String> moodHistoryList;
     @FXML private HBox moodButtonsBox;
     @FXML private LineChart<Number, Number> moodTrendChart;
+    @FXML private FlowPane moodFactorsPane;
+    @FXML private Text mostCommonMoodEmoji;
+    @FXML private Label mostCommonMoodLabel;
+    @FXML private Slider moodSlider;
 
     private final MoodEntryDAO moodEntryDAO = new MoodEntryDAO();
     private final ObservableList<String> moodHistoryDisplay = FXCollections.observableArrayList();
     private final Map<String, Color> moodColors = new HashMap<>();
     private final Map<String, Integer> moodValues = new HashMap<>();
     private final List<Animation> activeAnimations = new ArrayList<>();
-    private MediaPlayer mediaPlayer;
+    private final Set<String> selectedFactors = new HashSet<>();
 
+    private MediaPlayer mediaPlayer;
     private String selectedMood = "";
 
     @FXML
@@ -60,6 +67,7 @@ public class MoodTrackerViewController {
         startVisualEffects();
         playAmbientMusic();
         loadMoodHistory();
+        setupMoodSlider();
     }
 
     private void initializeMoodMaps() {
@@ -80,6 +88,39 @@ public class MoodTrackerViewController {
         moodHistoryList.setItems(moodHistoryDisplay);
         selectedMoodLabel.setText("Selected: None");
         setupMoodButtonActions();
+        setupFactorToggleButtons();
+    }
+
+    private void setupMoodSlider() {
+        moodSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            int moodValue = newVal.intValue();
+            selectedMood = switch(moodValue) {
+                case 1 -> "😡 Angry";
+                case 2 -> "😔 Sad";
+                case 3 -> "😐 Neutral";
+                case 4 -> "😊 Happy";
+                case 5 -> "😍 Excellent";
+                default -> "";
+            };
+            selectedMoodLabel.setText("Selected: " + selectedMood);
+        });
+    }
+
+    private void setupFactorToggleButtons() {
+        for (Node node : moodFactorsPane.getChildren()) {
+            if (node instanceof ToggleButton toggleButton) {
+                toggleButton.setOnAction(event -> {
+                    String factor = toggleButton.getText();
+                    if (toggleButton.isSelected()) {
+                        selectedFactors.add(factor);
+                        toggleButton.setStyle(toggleButton.getStyle() + "; -fx-effect: dropshadow(gaussian, #9e9e9e, 5, 0.5, 0, 2);");
+                    } else {
+                        selectedFactors.remove(factor);
+                        toggleButton.setStyle(toggleButton.getStyle().replaceAll(";?\\s*-fx-effect:.*?;", ""));
+                    }
+                });
+            }
+        }
     }
 
     private void startVisualEffects() {
@@ -105,23 +146,97 @@ public class MoodTrackerViewController {
     }
 
     private void updatePieChart(List<MoodEntry> entries) {
+        // Filter out null/empty moods and count occurrences
         Map<String, Long> moodCounts = entries.stream()
-                .collect(Collectors.groupingBy(MoodEntry::getMoodType, Collectors.counting()));
+                .filter(entry -> entry.getMoodType() != null && !entry.getMoodType().isEmpty())
+                .collect(Collectors.groupingBy(
+                        MoodEntry::getMoodType,
+                        Collectors.counting()
+                ));
 
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                moodCounts.entrySet().stream()
-                        .map(entry -> new PieChart.Data(entry.getKey(), entry.getValue()))
-                        .collect(Collectors.toList())
-        );
+        // Debug output
+        System.out.println("Mood counts for pie chart:");
+        moodCounts.forEach((k, v) -> System.out.println(k + ": " + v));
+
+        // Create pie chart data and apply colors
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+        moodCounts.forEach((mood, count) -> {
+            PieChart.Data slice = new PieChart.Data(mood, count);
+            pieChartData.add(slice);
+        });
 
         moodPieChart.setData(pieChartData);
+
+        // Apply colors to pie chart slices after they're added to the chart
+        for (PieChart.Data data : pieChartData) {
+            String mood = data.getName();
+            Color color = moodColors.getOrDefault(mood, Color.GRAY);
+
+            // We need to apply the color after the chart has been laid out
+            Platform.runLater(() -> {
+                if (data.getNode() != null) {
+                    data.getNode().setStyle("-fx-pie-color: " + toHexString(color) + ";");
+                }
+            });
+        }
+
+        updateMostCommonMoodDisplay(pieChartData);
+    }
+
+    private void updateMostCommonMoodDisplay(ObservableList<PieChart.Data> dataList) {
+        if (dataList == null || dataList.isEmpty()) {
+            mostCommonMoodEmoji.setText("");
+            mostCommonMoodLabel.setText("No data available");
+            mostCommonMoodLabel.setStyle("-fx-font-size: 20; -fx-text-fill: gray;");
+            return;
+        }
+
+        // Calculate total count
+        double total = dataList.stream()
+                .mapToDouble(PieChart.Data::getPieValue)
+                .sum();
+
+        if (total <= 0) {
+            mostCommonMoodEmoji.setText("");
+            mostCommonMoodLabel.setText("No valid data");
+            return;
+        }
+
+        // Find mood with maximum count
+        Optional<PieChart.Data> maxDataOpt = dataList.stream()
+                .max(Comparator.comparingDouble(PieChart.Data::getPieValue));
+
+        if (maxDataOpt.isEmpty()) {
+            mostCommonMoodEmoji.setText("");
+            mostCommonMoodLabel.setText("Could not determine most common mood");
+            return;
+        }
+
+        PieChart.Data maxData = maxDataOpt.get();
+        String mood = maxData.getName();
+        double count = maxData.getPieValue();
+        double percentage = (count * 100.0) / total;
+
+        // Debug output
+        System.out.printf("Most common mood: %s (%.1f%%) - Count: %.0f, Total: %.0f%n",
+                mood, percentage, count, total);
+
+        // Update display
+        String[] moodParts = mood.split(" ", 2);
+        String emoji = moodParts.length > 0 ? moodParts[0] : "";
+        Color moodColor = moodColors.getOrDefault(mood, Color.GRAY);
+        String colorHex = toHexString(moodColor);
+
+        mostCommonMoodEmoji.setText(emoji);
+        mostCommonMoodLabel.setText(String.format("%s (%.0f%%)", mood, percentage));
+        mostCommonMoodLabel.setStyle("-fx-font-size: 20; -fx-text-fill: " + colorHex + ";");
     }
 
     private void updateMoodTrendChart(List<MoodEntry> entries) {
         moodTrendChart.getData().clear();
 
         NumberAxis yAxis = (NumberAxis) moodTrendChart.getYAxis();
-        yAxis.setLabel("");
         yAxis.setAutoRanging(false);
         yAxis.setLowerBound(0);
         yAxis.setUpperBound(6);
@@ -140,21 +255,14 @@ public class MoodTrackerViewController {
             }
         });
 
-        NumberAxis xAxis = (NumberAxis) moodTrendChart.getXAxis();
-        xAxis.setLabel("Entries (Oldest to Recent)");
-        xAxis.setAutoRanging(false);
-        xAxis.setLowerBound(0);
-        xAxis.setUpperBound(entries.size() + 1);
-        xAxis.setTickUnit(1);
-        xAxis.setForceZeroInRange(false);
-
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
-
         List<MoodEntry> reversedEntries = new ArrayList<>(entries);
         Collections.reverse(reversedEntries);
 
         int index = 1;
         for (MoodEntry entry : reversedEntries) {
+            if (entry.getMoodType() == null || entry.getMoodType().isEmpty()) continue;
+
             int moodValue = moodValues.getOrDefault(entry.getMoodType(), 3);
             XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(index++, moodValue);
 
@@ -166,12 +274,6 @@ public class MoodTrackerViewController {
         }
 
         moodTrendChart.getData().add(series);
-
-        moodTrendChart.applyCss();
-        Set<Node> lines = moodTrendChart.lookupAll(".chart-series-line");
-        for (Node line : lines) {
-            line.setStyle("-fx-stroke: transparent;");
-        }
     }
 
     private String toHexString(Color color) {
@@ -189,12 +291,33 @@ public class MoodTrackerViewController {
         }
 
         String notes = moodNotes.getText().trim();
-        if (moodEntryDAO.addMoodEntryWithNotes(selectedMood, notes)) {
+        if (notes.length() > 500) {
+            showAlert("Note Too Long", "Please keep notes under 500 characters.");
+            return;
+        }
+
+        String allNotes = notes;
+        if (!selectedFactors.isEmpty()) {
+            allNotes += "\nFactors: " + String.join(", ", selectedFactors);
+        }
+
+        if (moodEntryDAO.addMoodEntryWithNotes(selectedMood, allNotes)) {
             showAlert("Success", "Mood entry saved!");
             moodNotes.clear();
+            selectedFactors.clear();
+            resetFactorStyles();
             loadMoodHistory();
         } else {
             showAlert("Error", "Failed to save mood entry.");
+        }
+    }
+
+    private void resetFactorStyles() {
+        for (Node node : moodFactorsPane.getChildren()) {
+            if (node instanceof ToggleButton toggleButton) {
+                toggleButton.setSelected(false);
+                toggleButton.setStyle(toggleButton.getStyle().replaceAll(";?\\s*-fx-effect:.*?;", ""));
+            }
         }
     }
 
@@ -207,6 +330,10 @@ public class MoodTrackerViewController {
                         selectedMood = moodButton.getText();
                         selectedMoodLabel.setText("Selected: " + selectedMood);
                         playButtonAnimation(moodButton);
+
+                        // Update slider position
+                        int value = moodValues.getOrDefault(selectedMood, 3);
+                        moodSlider.setValue(value);
                     });
                 });
     }
@@ -370,4 +497,5 @@ public class MoodTrackerViewController {
             mediaPlayer.dispose();
         }
     }
+
 }
