@@ -6,11 +6,19 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import mindgarden.MainApp;
 
 import java.time.LocalDateTime;
 
 public class HomeViewController {
+
+
+
+
 
     @FXML
     private Label greetingLabel;
@@ -63,6 +71,23 @@ public class HomeViewController {
         System.out.println("Opening goal setting");
     }
 
+    @FXML
+    private void openProfile() {
+        try {
+            MainApp.changeScene("profile.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML private StackPane profileIcon;
+    @FXML private Text profileInitials;
+    @FXML private Circle profileCircle;
+
+
+
+
+
+
     /**
      * Initialize method, called after FXML fields are populated
      */
@@ -71,7 +96,41 @@ public class HomeViewController {
         setupGreeting();
         setupMoodChart();
         setupWeeklyProgressChart();
+        updateUserInitials();
+        addProfileTooltip();
     }
+
+    private void updateUserInitials() {
+        if (MainApp.currentUser != null) {
+            String[] names = MainApp.currentUser.getUsername().split(" ");
+            String initials = names.length >= 2
+                    ? ("" + names[0].charAt(0) + names[1].charAt(0)).toUpperCase()
+                    : MainApp.currentUser.getUsername().substring(0, 1).toUpperCase();
+            profileInitials.setText(initials);
+        } else {
+            profileInitials.setText("??");
+        }
+    }
+
+    private void addProfileTooltip() {
+        Tooltip tooltip = new Tooltip("View Profile");
+        Tooltip.install(profileIcon, tooltip);
+    }
+
+    @FXML
+    private void onHoverProfile() {
+        profileCircle.setScaleX(1.1);
+        profileCircle.setScaleY(1.1);
+    }
+
+    @FXML
+    private void onExitProfile() {
+        profileCircle.setScaleX(1.0);
+        profileCircle.setScaleY(1.0);
+    }
+
+
+
 
     /**
      * Sets up time-based greeting
@@ -90,10 +149,8 @@ public class HomeViewController {
             } else {
                 greeting = "Good evening";
             }
-
-            // Assuming a user name could be loaded from user preferences
-            // For demo purposes, we'll use a hardcoded name
-            greetingLabel.setText(greeting + ", Jamie");
+            String name = (MainApp.currentUser != null) ? MainApp.currentUser.getUsername() : "Guest";
+            greetingLabel.setText(greeting + ", " + name);
         }
     }
 

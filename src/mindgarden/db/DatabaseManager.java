@@ -7,35 +7,34 @@ import java.sql.Statement;
 
 public class DatabaseManager {
 
-    // ✅ Chemin absolu vers le fichier SQLite que tu veux utiliser
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/rimta/MindGarden/database/mindgarden.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/pc/IdeaProjects/MindGarden/database/mindgarden.db";
 
-    // --- Table Creation SQL ---
+    private static final String CREATE_USERS_TABLE_SQL = """
+        CREATE TABLE IF NOT EXISTS Users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
+        );
+    """;
+
     private static final String CREATE_MOOD_TABLE_SQL = """
-            CREATE TABLE IF NOT EXISTS MoodEntries (
-                entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                mood_type TEXT NOT NULL,
-                entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                notes TEXT
-            );
-            """;
+        CREATE TABLE IF NOT EXISTS MoodEntries (
+            entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            mood_type TEXT NOT NULL,
+            entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            notes TEXT
+        );
+    """;
 
     private static final String CREATE_JOURNAL_TABLE_SQL = """
-            CREATE TABLE IF NOT EXISTS JournalEntries (
-                entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                entry_content TEXT NOT NULL,
-                entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-            """;
-    // --- End Table Creation SQL ---
+        CREATE TABLE IF NOT EXISTS JournalEntries (
+            entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entry_content TEXT NOT NULL,
+            entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    """;
 
-    /**
-     * Établit une connexion à la base SQLite.
-     * Crée la base et les tables si elles n'existent pas encore.
-     *
-     * @return une connexion active à la base de données.
-     * @throws SQLException en cas d’erreur d’accès à la base.
-     */
     public static Connection connect() throws SQLException {
         try {
             Connection conn = DriverManager.getConnection(DB_URL);
@@ -48,13 +47,10 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Crée les tables nécessaires si elles n'existent pas.
-     *
-     * @param conn la connexion active.
-     */
     private static void createTablesIfNotExist(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
+            stmt.execute(CREATE_USERS_TABLE_SQL);
+            System.out.println("✅ Table Users vérifiée/créée.");
             stmt.execute(CREATE_MOOD_TABLE_SQL);
             System.out.println("✅ Table MoodEntries vérifiée/créée.");
             stmt.execute(CREATE_JOURNAL_TABLE_SQL);
@@ -64,11 +60,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Ferme un élément AutoCloseable (comme ResultSet ou Statement) sans exception.
-     *
-     * @param resource l’objet à fermer.
-     */
     public static void closeQuietly(AutoCloseable resource) {
         if (resource != null) {
             try {

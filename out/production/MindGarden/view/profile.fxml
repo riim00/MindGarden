@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="mindgarden.controller.ProfileController"
+            prefWidth="400" prefHeight="550"
+            style="-fx-background-color: linear-gradient(to bottom, #e8f5e9, #c8e6c9);">
+
+    <!-- Decorative Elements -->
+    <Rectangle AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+               height="120" arcWidth="30" arcHeight="30"
+               style="-fx-fill: linear-gradient(to right, #43a047, #66bb6a); -fx-opacity: 0.85;">
+        <effect>
+            <DropShadow color="#88888844" radius="10" spread="0.1" />
+        </effect>
+    </Rectangle>
+
+    <!-- Main Content -->
+    <VBox spacing="18" alignment="TOP_CENTER"
+          AnchorPane.topAnchor="40" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40"
+          AnchorPane.bottomAnchor="30">
+
+        <!-- Header -->
+        <HBox alignment="CENTER">
+            <Label text="MindGarden" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;">
+                <effect>
+                    <DropShadow radius="2" spread="0.3" color="#00000044" />
+                </effect>
+            </Label>
+            <Label text=" 🌱" style="-fx-font-size: 32;" />
+        </HBox>
+
+        <!-- Profile Card Container -->
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-background-color: white; -fx-background-radius: 12;">
+            <padding>
+                <Insets top="25" right="25" bottom="25" left="25" />
+            </padding>
+            <effect>
+                <DropShadow color="#88888866" radius="10" spread="0.05" />
+            </effect>
+
+            <!-- Avatar -->
+            <StackPane>
+                <Circle radius="45" fill="#e0f2f1" />
+                <Text text="👤" style="-fx-font-size: 50;" />
+            </StackPane>
+
+            <!-- Profile Title -->
+            <Label text="Your Profile" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+
+            <Separator style="-fx-opacity: 0.3;" />
+
+            <!-- Profile Details -->
+            <VBox spacing="16" alignment="CENTER">
+                <!-- Username -->
+                <VBox spacing="5" alignment="CENTER">
+                    <Label text="USERNAME" style="-fx-text-fill: #757575; -fx-font-size: 12;" />
+                    <Label fx:id="usernameLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #424242;" text="GardenLover123" />
+                </VBox>
+
+                <!-- Email -->
+                <VBox spacing="5" alignment="CENTER">
+                    <Label text="EMAIL ADDRESS" style="-fx-text-fill: #757575; -fx-font-size: 12;" />
+                    <Label fx:id="emailLabel" style="-fx-font-size: 16; -fx-text-fill: #424242;" text="gardenlover@example.com" />
+                </VBox>
+
+                <!-- Account Stats -->
+                <HBox spacing="15" alignment="CENTER">
+                    <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #f1f8e9; -fx-background-radius: 8; -fx-padding: 10;">
+                        <Label text="4" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #388e3c;" />
+                        <Label text="Plants" style="-fx-text-fill: #558b2f; -fx-font-size: 12;" />
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #f1f8e9; -fx-background-radius: 8; -fx-padding: 10;">
+                        <Label text="12" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #388e3c;" />
+                        <Label text="Days" style="-fx-text-fill: #558b2f; -fx-font-size: 12;" />
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="5" style="-fx-background-color: #f1f8e9; -fx-background-radius: 8; -fx-padding: 10;">
+                        <Label text="3" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #388e3c;" />
+                        <Label text="Goals" style="-fx-text-fill: #558b2f; -fx-font-size: 12;" />
+                    </VBox>
+                </HBox>
+
+                <Separator style="-fx-opacity: 0.3;" />
+
+                <!-- Action Buttons -->
+                <HBox spacing="10">
+                    <Button text="Edit Profile" style="-fx-background-color: #f1f8e9; -fx-text-fill: #2e7d32; -fx-border-color: #2e7d32; -fx-border-width: 1; -fx-background-radius: 6; -fx-border-radius: 6;" />
+                    <Button text="Preferences" style="-fx-background-color: #f1f8e9; -fx-text-fill: #2e7d32; -fx-border-color: #2e7d32; -fx-border-width: 1; -fx-background-radius: 6; -fx-border-radius: 6;" />
+                </HBox>
+
+                <!-- Logout Button -->
+                <Button text="Logout" onAction="#handleLogout" prefHeight="36">
+                    <style>
+                        -fx-background-color: #e53935;
+                        -fx-text-fill: white;
+                        -fx-font-weight: bold;
+                        -fx-background-radius: 6;
+                        -fx-cursor: hand;
+                    </style>
+                </Button>
+            </VBox>
+        </VBox>
+
+        <!-- Navigation -->
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Dashboard" style="-fx-background-color: transparent; -fx-text-fill: #558b2f; -fx-font-weight: bold;" />
+            <Label text="•" style="-fx-text-fill: #aed581;" />
+            <Button text="Garden" style="-fx-background-color: transparent; -fx-text-fill: #558b2f; -fx-font-weight: bold;" />
+            <Label text="•" style="-fx-text-fill: #aed581;" />
+            <Button text="Goals" style="-fx-background-color: transparent; -fx-text-fill: #558b2f; -fx-font-weight: bold;" />
+        </HBox>
+
+        <!-- Footer -->
+        <Label text="© 2025 MindGarden • Terms • Privacy" style="-fx-text-fill: #7cb342; -fx-font-size: 11;" />
+    </VBox>
+</AnchorPane>

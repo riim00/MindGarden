@@ -11,6 +11,10 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 
+<?import java.net.URL?>
+
+
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="mindgarden.controller.HomeViewController"
@@ -18,6 +22,7 @@
             style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);">
 
     <!-- Header with Navigation -->
+
     <top>
         <VBox>
             <HBox alignment="CENTER" spacing="15"
@@ -34,10 +39,15 @@
                             style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
                     <Button text="Help" styleClass="nav-button" onAction="#openHelp"
                             style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
-                    <StackPane>
-                        <Circle radius="18" fill="#43a047" />
-                        <Text text="JS" fill="WHITE" style="-fx-font-weight: bold;" />
+                    <StackPane fx:id="profileIcon"
+                               onMouseClicked="#openProfile"
+                               onMouseEntered="#onHoverProfile"
+                               onMouseExited="#onExitProfile"
+                               style="-fx-cursor: hand; -fx-padding: 5;">
+                        <Circle fx:id="profileCircle" radius="18" fill="#43a047" />
+                        <Text fx:id="profileInitials" text="??" fill="WHITE" style="-fx-font-weight: bold;" />
                     </StackPane>
+
                 </HBox>
             </HBox>
 
@@ -83,43 +93,53 @@
                 <HBox alignment="CENTER" spacing="40">
                     <!-- Mood Tracker Card (Enhanced) -->
                     <VBox alignment="CENTER" spacing="15"
-                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                          prefWidth="220" prefHeight="280">
-                        <Label text="😊" style="-fx-font-size: 42;"/>
-                        <Label text="Mood Tracker" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1565c0;"/>
-                        <Label text="Track your emotions and discover patterns in your mood over time"
-                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
-
-                        <!-- Mini Mood Chart -->
-                        <PieChart fx:id="moodMiniChart" legendVisible="false" prefHeight="80" prefWidth="120"
+                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25;
+             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="240" prefHeight="380" minHeight="380" maxHeight="380"
+                          fx:id="card1" styleClass="card">
+                        <Label text="😊" style="-fx-font-size: 42;" />
+                        <Label text="Mood Tracker" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #1565c0;" />
+                        <Label text="Track your emotions "
+                               wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;" />
+                        <PieChart fx:id="moodMiniChart"
+                                  legendVisible="false" prefHeight="40" prefWidth="60"
                                   style="-fx-pie-label-visible: false; -fx-background-color: transparent;" />
 
+                        <Region VBox.vgrow="ALWAYS" />
                         <Button text="Open Tracker" onAction="#openMoodTracker"
-                                style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                                style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20;
+                   -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
                                 <DropShadow color="#bbdefb" radius="5" spread="0.1"/>
                             </effect>
                         </Button>
                     </VBox>
 
+
                     <!-- Journal Card (Enhanced) -->
                     <VBox alignment="CENTER" spacing="15"
-                          style="-fx-background-color: #e8f5e9; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                          prefWidth="220" prefHeight="280">
+                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25;
+             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="240" prefHeight="380" minHeight="380" maxHeight="380"
+                          fx:id="card2" styleClass="card">
                         <Label text="📓" style="-fx-font-size: 42;"/>
                         <Label text="Journal" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #2e7d32;"/>
-                        <Label text="Write down your thoughts and reflect on your daily experiences"
+                        <Label text="Write down your thoughts"
                                wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
 
                         <!-- Recent Journal Preview -->
-                        <VBox style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 8; -fx-max-height: 80; -fx-min-height: 80;">
+                        <VBox style="-fx-background-color: rgba(255,255,255,0.6); -fx-background-radius: 8; -fx-padding: 8;"
+                              prefHeight="60" maxHeight="60" minHeight="60">
                             <Label text="Latest Entry: May 2" style="-fx-font-size: 10; -fx-text-fill: #757575;" />
                             <Label text="Today I felt a sense of accomplishment after..."
                                    style="-fx-font-size: 11; -fx-text-fill: #424242;" wrapText="true" />
                         </VBox>
 
+                        <Region VBox.vgrow="ALWAYS" />
+
+
                         <Button text="Open Journal" onAction="#openJournal"
-                                style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                                style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
                                 <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
                             </effect>
@@ -128,8 +148,10 @@
 
                     <!-- Meditation Card (Enhanced) -->
                     <VBox alignment="CENTER" spacing="15"
-                          style="-fx-background-color: #fce4ec; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
-                          prefWidth="220" prefHeight="280">
+                          style="-fx-background-color: #e3f2fd; -fx-background-radius: 15; -fx-padding: 25;
+             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);"
+                          prefWidth="240" prefHeight="380" minHeight="380" maxHeight="380"
+                          fx:id="card3" styleClass="card">
                         <Label text="🧘" style="-fx-font-size: 42;"/>
                         <Label text="Meditation" style="-fx-font-weight: bold; -fx-font-size: 18; -fx-text-fill: #c2185b;"/>
                         <Label text="Practice mindfulness with guided meditation sessions"
@@ -151,8 +173,11 @@
                             </VBox>
                         </HBox>
 
+                        <Region VBox.vgrow="ALWAYS" />
+
+
                         <Button text="Start Session" onAction="#openMeditation"
-                                style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold;">
+                                style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
                                 <DropShadow color="#f8bbd0" radius="5" spread="0.1"/>
                             </effect>

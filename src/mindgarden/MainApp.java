@@ -4,8 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import mindgarden.model.User;
 
 public class MainApp extends Application {
+
+    public static User currentUser = null; // accessible partout
 
     private static Stage primaryStage;
 
@@ -28,4 +31,5 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }
