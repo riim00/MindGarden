@@ -15,7 +15,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
-        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/HomeView.fxml"));
+        FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/MeditationView.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setTitle("MindGarden 🌱");
         stage.setScene(scene);
