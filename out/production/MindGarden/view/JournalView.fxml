@@ -72,7 +72,7 @@
                     <!-- Date & Mood Selection -->
                     <HBox alignment="CENTER" spacing="20" style="-fx-padding: 0 0 10 0;">
                         <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                            <Label text="Friday, April 25, 2025" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #3c4043;"/>
+                            <Label fx:id="dateLabel" text="Friday, April 25, 2025" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #3c4043;"/>
                             <Label text="Creating a new entry" style="-fx-font-size: 14; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
                         </VBox>
 
@@ -122,9 +122,11 @@
 
                     <!-- Action Buttons -->
                     <HBox alignment="CENTER" spacing="15">
-                        <Button text="Save as Draft"
+                        <Button fx:id="saveDraftButton"
+                                text="Save as Draft"
                                 style="-fx-background-color: #f5f9f5; -fx-text-fill: #5f6368; -fx-background-radius: 20; -fx-padding: 10 25; -fx-font-weight: bold;"/>
-                        <Button text="Save Entry" onAction="#saveEntry"
+                        <Button fx:id="saveButton"
+                                text="Save Entry"
                                 style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 10 25; -fx-font-weight: bold;">
                             <graphic>
                                 <Text text="📝" style="-fx-font-size: 14;"/>
@@ -137,49 +139,16 @@
                 </VBox>
 
                 <!-- Recent Entries Section -->
-                <VBox alignment="CENTER" spacing="20" maxWidth="800">
+                <!-- Recent Entries Section -->
+                <VBox alignment="CENTER" spacing="20" maxWidth="800" >
                     <Label text="Recent Entries" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #3c4043;"/>
 
                     <!-- Entry Cards -->
-                    <VBox spacing="15">
-                        <!-- Entry 1 -->
-                        <HBox alignment="CENTER_LEFT" spacing="15"
-                              style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-                            <VBox alignment="CENTER" minWidth="80">
-                                <Label text="Apr" style="-fx-font-size: 14; -fx-text-fill: #5f6368;"/>
-                                <Label text="24" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
-                                <Label text="😊" style="-fx-font-size: 24;"/>
-                            </VBox>
-                            <Separator orientation="VERTICAL" style="-fx-background-color: #e0e0e0;"/>
-                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                <Label text="A moment of gratitude" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3c4043;"/>
-                                <Label text="Today I spent some time in the garden and noticed how the flowers..."
-                                       wrapText="true" style="-fx-text-fill: #5f6368;"/>
-                            </VBox>
-                            <Button text="View"
-                                    style="-fx-background-color: #e8f5e9; -fx-text-fill: #2e7d32; -fx-background-radius: 20; -fx-padding: 8 20;"/>
-                        </HBox>
-
-                        <!-- Entry 2 -->
-                        <HBox alignment="CENTER_LEFT" spacing="15"
-                              style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-                            <VBox alignment="CENTER" minWidth="80">
-                                <Label text="Apr" style="-fx-font-size: 14; -fx-text-fill: #5f6368;"/>
-                                <Label text="22" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
-                                <Label text="🤔" style="-fx-font-size: 24;"/>
-                            </VBox>
-                            <Separator orientation="VERTICAL" style="-fx-background-color: #e0e0e0;"/>
-                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                <Label text="Reflecting on choices" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3c4043;"/>
-                                <Label text="I've been thinking about the decision I need to make regarding..."
-                                       wrapText="true" style="-fx-text-fill: #5f6368;"/>
-                            </VBox>
-                            <Button text="View"
-                                    style="-fx-background-color: #e8f5e9; -fx-text-fill: #2e7d32; -fx-background-radius: 20; -fx-padding: 8 20;"/>
-                        </HBox>
+                    <VBox fx:id="recentEntriesContainer" spacing="15">
+                        <!-- Les entrées seront ajoutées dynamiquement ici -->
                     </VBox>
 
-                    <Button text="View All Entries"
+                    <Button fx:id="viewAllButton" text="View All Entries" onAction="#viewAllEntries"
                             style="-fx-background-color: transparent; -fx-text-fill: #1976d2; -fx-font-weight: bold; -fx-padding: 10 25;">
                         <graphic>
                             <Text text="→" style="-fx-font-size: 14;"/>

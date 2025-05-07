@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseManager {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/pc/IdeaProjects/MindGarden/database/mindgarden.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/ahmed/IdeaProjects/MindGarden/database/mindgarden.db";
 
     private static final String CREATE_USERS_TABLE_SQL = """
         CREATE TABLE IF NOT EXISTS Users (
@@ -29,10 +29,13 @@ public class DatabaseManager {
 
     private static final String CREATE_JOURNAL_TABLE_SQL = """
         CREATE TABLE IF NOT EXISTS JournalEntries (
-            entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            entry_content TEXT NOT NULL,
-            entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
+                      entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      entry_content TEXT NOT NULL,
+                      is_draft INTEGER DEFAULT 0,
+                      title TEXT,
+                      mood TEXT,
+                      entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                  );
     """;
 
     public static Connection connect() throws SQLException {
