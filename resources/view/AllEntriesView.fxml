@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import java.lang.String?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="mindgarden.controller.AllEntriesViewController"
+            prefHeight="700.0" prefWidth="900.0"
+            style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);">
+
+    <!-- Header -->
+    <top>
+        <VBox>
+            <!-- Navigation Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="15"
+                  style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+
+                <Button fx:id="backButton" onAction="#goBack"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 8 15;">
+                    <graphic>
+                        <Text text="←" style="-fx-font-size: 18;"/>
+                    </graphic>
+                    <HBox.margin>
+                        <Insets right="10"/>
+                    </HBox.margin>
+                </Button>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Text text="📚" style="-fx-font-size: 24;"/>
+                    <Label text="All Journal Entries" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
+                        <font>
+                            <Font name="Verdana Bold" size="24.0"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="settingsButton" text="⚙️"
+                        style="-fx-background-color: transparent; -fx-font-size: 18;"/>
+            </HBox>
+
+            <!-- Filter Options -->
+            <HBox alignment="CENTER" spacing="15" style="-fx-background-color: #f5f9f5; -fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+                <Label text="Filter by:" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+
+                <ComboBox fx:id="moodFilter" promptText="Mood"
+                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 15; -fx-border-width: 1px;">
+                </ComboBox>
+
+                <DatePicker fx:id="dateFilter" promptText="Date"
+                            style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 15; -fx-border-width: 1px;">
+                </DatePicker>
+
+                <TextField fx:id="searchField" promptText="Search in entries..." prefWidth="250"
+                           style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 15; -fx-border-width: 1px; -fx-padding: 5 15;">
+                </TextField>
+
+                <Button fx:id="searchButton" text="Search"
+                        style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 5 15;">
+                </Button>
+
+                <Button fx:id="clearFilterButton" text="Clear Filters"
+                        style="-fx-background-color: transparent; -fx-text-fill: #5f6368; -fx-border-color: #e0e0e0; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 5 15;">
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <Label fx:id="entriesCountLabel" text="Showing all entries (0)" style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #5f6368;"/>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-padding: 0;">
+                <VBox fx:id="entriesContainer" spacing="15" style="-fx-padding: 10;">
+                    <!-- Journal entries will be loaded here dynamically -->
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <VBox alignment="CENTER" spacing="5"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15;">
+            <Label text="Revisiting past entries helps connect your growth journey"
+                   style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #2e7d32;"/>
+            <Label text="MindGarden © 2025"
+                   style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
+        </VBox>
+    </bottom>
+</BorderPane>

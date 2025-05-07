@@ -1,6 +1,7 @@
 package mindgarden.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -636,6 +637,7 @@ public class JournalViewController {
 
         // Bouton pour voir l'entrée complète
         Button viewButton = new Button("View");
+        viewButton.setMinWidth(70);
         viewButton.setStyle("-fx-background-color: #e8f5e9; -fx-text-fill: #2e7d32; -fx-background-radius: 20; -fx-padding: 8 20;");
         viewButton.setOnAction(e -> viewEntryDetails(entry.getId()));
 
@@ -665,10 +667,22 @@ public class JournalViewController {
     // Méthode pour voir les détails d'une entrée
     @FXML
     private void viewEntryDetails(int entryId) {
-        // Implémenter la logique pour afficher les détails d'une entrée
-        // Cela pourrait impliquer de changer de scène ou d'ouvrir une boîte de dialogue
-        System.out.println("Viewing entry with ID: " + entryId);
-        // À compléter selon votre logique d'application
+        try {
+            // Obtenir une référence à la scène actuelle à travers un élément FXML existant
+            // (ici on utilise journalTextArea qui est déjà défini dans votre classe)
+            Stage primaryStage = (Stage) journalTextArea.getScene().getWindow();
+
+            // Changer vers la vue EntryDetailView.fxml
+            MainApp.changeScene("EntryDetailView.fxml");
+
+            // Récupérer le UserData de la scène qui contient le loader
+            FXMLLoader loader = (FXMLLoader) primaryStage.getScene().getUserData();
+            EntryDetailViewController controller = (EntryDetailViewController) loader.getController();
+            controller.setEntryId(entryId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Could not open entry details.");
+        }
     }
 
     // Méthode pour voir toutes les entrées
@@ -679,6 +693,13 @@ public class JournalViewController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

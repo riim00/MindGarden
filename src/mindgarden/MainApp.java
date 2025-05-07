@@ -12,6 +12,11 @@ public class MainApp extends Application {
 
     private static Stage primaryStage;
 
+    public static Object getController() {
+        FXMLLoader loader = (FXMLLoader) primaryStage.getScene().getUserData();
+        return loader.getController();
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
@@ -25,6 +30,7 @@ public class MainApp extends Application {
     public static void changeScene(String fxmlFile) throws Exception {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/view/" + fxmlFile));
         Scene scene = new Scene(loader.load());
+        scene.setUserData(loader);
         primaryStage.setScene(scene);
     }
 
