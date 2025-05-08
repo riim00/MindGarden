@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefWidth="500" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);"
+            xmlns:fx="http://javafx.com/fxml" fx:controller="mindgarden.controller.GoalSettingController">
+
+    <VBox spacing="20" alignment="TOP_CENTER" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="15"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1);
+             -fx-padding: 20;
+             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+
+            <Button fx:id="backButton" text="← Back" onAction="#onBack"
+                    style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold; -fx-font-size: 14; -fx-cursor: hand;" />
+
+            <Text text="🎯" style="-fx-font-size: 32;"/>
+            <Label text="Create a New Goal" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
+                <font>
+                    <Font name="Verdana Bold" size="24.0"/>
+                </font>
+            </Label>
+        </HBox>
+
+
+        <!-- Main Content -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox alignment="CENTER" spacing="25" style="-fx-padding: 20 40 40 40;">
+
+                <!-- Introduction message -->
+                <Label text="Set meaningful goals to nurture your wellbeing journey"
+                       style="-fx-font-size: 16; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
+
+                <!-- Goal Form Card -->
+                <VBox alignment="CENTER_LEFT" spacing="20"
+                      style="-fx-background-color: #f3e5f5;
+                             -fx-background-radius: 15;
+                             -fx-padding: 30;
+                             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 3);">
+
+                    <!-- Goal Title -->
+                    <VBox spacing="8">
+                        <Label text="Goal Title" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                        <TextField fx:id="goalTitleField" promptText="What do you want to achieve?"
+                                   style="-fx-background-radius: 8;
+                                          -fx-border-radius: 8;
+                                          -fx-padding: 10;
+                                          -fx-background-color: rgba(255,255,255,0.8);">
+                            <effect>
+                                <DropShadow color="#0000000d" radius="4" />
+                            </effect>
+                        </TextField>
+                    </VBox>
+
+                    <!-- Goal Type -->
+                    <VBox spacing="8">
+                        <Label text="Goal Category" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                        <HBox spacing="10">
+                            <ComboBox fx:id="goalTypeComboBox" promptText="Select goal category"
+                                      style="-fx-background-radius: 8;
+                                             -fx-border-radius: 8;
+                                             -fx-background-color: rgba(255,255,255,0.8);"
+                                      prefWidth="240" />
+                            <Region HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Goal Period -->
+                    <HBox spacing="15">
+                        <!-- Start Date -->
+                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="Start Date" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                            <DatePicker fx:id="goalStartDatePicker" promptText="When will you start?"
+                                        style="-fx-background-radius: 8;
+                                               -fx-border-radius: 8;
+                                               -fx-background-color: rgba(255,255,255,0.8);"
+                                        maxWidth="Infinity" />
+                        </VBox>
+
+                        <!-- Deadline -->
+                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                            <Label text="Target Completion Date" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                            <DatePicker fx:id="goalDeadlinePicker" promptText="When will you achieve this?"
+                                        style="-fx-background-radius: 8;
+                                               -fx-border-radius: 8;
+                                               -fx-background-color: rgba(255,255,255,0.8);"
+                                        maxWidth="Infinity" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Goal Description -->
+                    <VBox spacing="8">
+                        <Label text="Description" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                        <TextArea fx:id="goalDescriptionArea" promptText="Add more details about your goal..."
+                                  style="-fx-background-radius: 8;
+                                         -fx-border-radius: 8;
+                                         -fx-background-color: rgba(255,255,255,0.8);"
+                                  prefHeight="100"
+                                  wrapText="true">
+                            <effect>
+                                <DropShadow color="#0000000d" radius="4" />
+                            </effect>
+                        </TextArea>
+                    </VBox>
+
+                    <!-- Tracking Options -->
+                    <VBox spacing="8">
+                        <Label text="Tracking" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #7b1fa2;"/>
+                        <HBox spacing="20">
+                            <CheckBox fx:id="reminderCheck" text="Set Reminders"
+                                      style="-fx-text-fill: #5f6368;"/>
+                            <CheckBox fx:id="trackProgressCheck" text="Track Progress"
+                                      style="-fx-text-fill: #5f6368;"/>
+                            <CheckBox fx:id="notifyCompletionCheck" text="Notify on Completion"
+                                      style="-fx-text-fill: #5f6368;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Action Buttons -->
+                    <HBox alignment="CENTER" spacing="15" style="-fx-padding: 15 0 0 0;">
+                        <Button text="Cancel"
+                                style="-fx-background-color: transparent;
+                                       -fx-text-fill: #7b1fa2;
+                                       -fx-border-color: #9575cd;
+                                       -fx-border-radius: 20;
+                                       -fx-background-radius: 20;
+                                       -fx-padding: 10 25;
+                                       -fx-cursor: hand;"/>
+
+                        <Button text="Save Goal" onAction="#onSaveGoal"
+                                style="-fx-background-color: #9575cd;
+                                       -fx-text-fill: white;
+                                       -fx-background-radius: 20;
+                                       -fx-padding: 10 25;
+                                       -fx-font-weight: bold;
+                                       -fx-cursor: hand;">
+                            <effect>
+                                <DropShadow color="#d1c4e9" radius="5" spread="0.1"/>
+                            </effect>
+                        </Button>
+                    </HBox>
+                </VBox>
+
+                <!-- Motivational Quote -->
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: #fff8e1;
+                             -fx-background-radius: 15;
+                             -fx-padding: 15;
+                             -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="✨" style="-fx-font-size: 20;"/>
+                        <Label text="Goal Setting Tip" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #ff6f00;"/>
+                    </HBox>
+                    <Label text="Specific, measurable goals are more likely to be achieved. Break large goals into smaller milestones for better progress tracking."
+                           wrapText="true" style="-fx-text-fill: #5f6368; -fx-padding: 5 0 0 0;"/>
+                </VBox>
+
+                <!-- List of Existing Goals -->
+                <VBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="📋 My Goals"
+                           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+
+                    <TableView fx:id="goalTableView" prefHeight="250"
+                               style="-fx-background-radius: 10; -fx-background-color: white; -fx-padding: 5;"
+                               VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="titleColumn" text="Title" prefWidth="120"
+                                         style="-fx-alignment: CENTER;" />
+                            <TableColumn fx:id="typeColumn" text="Category" prefWidth="100"
+                                         style="-fx-alignment: CENTER;" />
+                            <TableColumn fx:id="startDateColumn" text="Start Date" prefWidth="100"
+                                         style="-fx-alignment: CENTER;" />
+                            <TableColumn fx:id="deadlineColumn" text="Deadline" prefWidth="100"
+                                         style="-fx-alignment: CENTER;" />
+                            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"
+                                         style="-fx-alignment: CENTER-LEFT;" />
+                            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120" style="-fx-alignment: CENTER;" />
+                        </columns>
+                    </TableView>
+
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <!-- Footer -->
+        <HBox alignment="CENTER" spacing="30"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15;">
+            <Label text="Plant the seeds of intention, harvest growth"
+                   style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #2e7d32;"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

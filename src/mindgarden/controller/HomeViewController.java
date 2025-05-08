@@ -11,8 +11,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import mindgarden.MainApp;
+import mindgarden.db.GoalDAO;
+import mindgarden.model.Goal;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class HomeViewController {
 
@@ -29,11 +32,23 @@ public class HomeViewController {
     @FXML
     private BarChart<String, Number> weeklyProgressChart;
 
-    @FXML
-    private CheckBox meditationGoalCheck;
+    @FXML private Label goal1Label;
+    @FXML private Label goal2Label;
 
-    @FXML
-    private CheckBox journalGoalCheck;
+    public void loadWeeklyGoals() {
+        int userId = MainApp.currentUser.getId(); // supposé que MainApp.currentUser existe
+        List<Goal> latestGoals = GoalDAO.getLatestGoalsByUser(userId, 2);
+
+        if (latestGoals.size() > 0) {
+            goal1Label.setText(latestGoals.get(0).getTitle());
+        }
+        if (latestGoals.size() > 1) {
+            goal2Label.setText(latestGoals.get(1).getTitle());
+        }
+    }
+
+
+
 
     @FXML
     private void openSettings() {
@@ -68,7 +83,11 @@ public class HomeViewController {
 
     @FXML
     private void openGoalSetting() {
-        System.out.println("Opening goal setting");
+        try {
+            MainApp.changeScene("GoalSettingView.fxml"); // ou une popup/modal si tu préfères
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -98,6 +117,7 @@ public class HomeViewController {
         setupWeeklyProgressChart();
         updateUserInitials();
         addProfileTooltip();
+        loadWeeklyGoals();
     }
 
     private void updateUserInitials() {

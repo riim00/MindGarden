@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseManager {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/ahmed/IdeaProjects/MindGarden/database/mindgarden.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/pc/IdeaProjects/MindGarden/database/mindgarden.db";
 
     private static final String CREATE_USERS_TABLE_SQL = """
         CREATE TABLE IF NOT EXISTS Users (
@@ -38,6 +38,25 @@ public class DatabaseManager {
                   );
     """;
 
+    private static final String CREATE_GOALS_TABLE_SQL = """
+    CREATE TABLE IF NOT EXISTS goals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        type TEXT NOT NULL,
+        description TEXT,
+        start_date DATE,
+        deadline DATE,
+        reminder INTEGER DEFAULT 0,
+        track_progress INTEGER DEFAULT 0,
+        notify_on_completion INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+    );
+""";
+
+
     public static Connection connect() throws SQLException {
         try {
             Connection conn = DriverManager.getConnection(DB_URL);
@@ -58,6 +77,9 @@ public class DatabaseManager {
             System.out.println("✅ Table MoodEntries vérifiée/créée.");
             stmt.execute(CREATE_JOURNAL_TABLE_SQL);
             System.out.println("✅ Table JournalEntries vérifiée/créée.");
+            stmt.execute(CREATE_GOALS_TABLE_SQL);
+            System.out.println("✅ Table Goals vérifiée/créée.");
+
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la création des tables : " + e.getMessage());
         }
