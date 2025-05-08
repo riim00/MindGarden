@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseManager {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/pc/IdeaProjects/MindGarden/database/mindgarden.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/ahmed/IdeaProjects/MindGarden/database/mindgarden.db";
 
     private static final String CREATE_USERS_TABLE_SQL = """
         CREATE TABLE IF NOT EXISTS Users (
@@ -34,7 +34,9 @@ public class DatabaseManager {
                       is_draft INTEGER DEFAULT 0,
                       title TEXT,
                       mood TEXT,
-                      entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                      user_id INTEGER NOT NULL,
+                      entry_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                      FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
                   );
     """;
 

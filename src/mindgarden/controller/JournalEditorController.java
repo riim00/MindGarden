@@ -74,6 +74,7 @@ public class JournalEditorController {
     private JournalEntryDAO journalEntryDAO;
     private JournalEntry currentEntry;
     private boolean editMode = false;
+    private int currentUserId;
 
     /**
      * Initialize the controller
@@ -216,7 +217,8 @@ public class JournalEditorController {
                     currentEntry.getId(),
                     content,
                     title,
-                    mood
+                    mood,
+                    MainApp.currentUser.getId()  // Add this parameter
             );
 
             if (success) {
@@ -230,7 +232,7 @@ public class JournalEditorController {
             }
         } else {
             // Save new entry
-            success = journalEntryDAO.addJournalEntry(content, title, mood);
+            success = journalEntryDAO.addJournalEntry(content, title, mood, MainApp.currentUser.getId());
 
             if (success) {
                 showAlert(AlertType.INFORMATION, "Entry Saved",
@@ -269,7 +271,7 @@ public class JournalEditorController {
             return;
         } else {
             // Save new draft
-            success = journalEntryDAO.addJournalEntryAsDraft(content, title, mood);
+            success = journalEntryDAO.addJournalEntryAsDraft(content, title, mood, MainApp.currentUser.getId());
 
             if (success) {
                 showAlert(AlertType.INFORMATION, "Draft Saved",
@@ -405,7 +407,7 @@ public class JournalEditorController {
         try {
             MainApp.changeScene("EntryDetailView.fxml");
             EntryDetailViewController controller = (EntryDetailViewController) MainApp.getController();
-            controller.setEntryId(entryId);
+            controller.setEntryId(entryId,currentUserId);
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Navigation Error",

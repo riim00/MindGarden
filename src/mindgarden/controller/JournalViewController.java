@@ -64,6 +64,8 @@ public class JournalViewController {
     @FXML
     private Button saveDraftButton;
 
+    private int currentUserId;
+
 
 
     @FXML
@@ -72,7 +74,7 @@ public class JournalViewController {
 
         updateCurrentDate();
 
-        // Initialize mood selector with options
+        // Initialiser les sélecteurs d'humeur
         if (moodSelector != null) {
             moodSelector.getItems().addAll(
                     "😊 Happy",
@@ -85,10 +87,10 @@ public class JournalViewController {
             );
         }
 
-        // Initialize the settings menu
+        // Initialiser le menu des paramètres
         initializeSettingsMenu();
 
-        // Add event handlers for buttons
+        // Ajouter les gestionnaires d'événements pour les boutons
         if (saveButton != null) {
             saveButton.setOnAction(e -> saveEntry());
         }
@@ -97,7 +99,7 @@ public class JournalViewController {
             saveDraftButton.setOnAction(e -> saveDraft());
         }
 
-        // Charger les entrées récentes
+        // Charger les entrées récentes uniquement pour l'utilisateur courant
         loadRecentEntries();
     }
 
@@ -487,19 +489,27 @@ public class JournalViewController {
     }
     @FXML
     private void saveEntry() {
+        // Vérifier si un utilisateur est connecté
+        if (MainApp.currentUser == null) {
+            showSaveError("Please log in to save journal entries.");
+            return;
+        }
+
         String entryContent = journalTextArea.getText().trim();
         String title = titleField != null ? titleField.getText().trim() : "";
         String mood = moodSelector != null ? moodSelector.getValue() : "";
 
         if (!entryContent.isEmpty()) {
-            boolean success = journalEntryDAO.addJournalEntry(entryContent, title, mood);
+            // Passer l'ID de l'utilisateur actuel au DAO
+            boolean success = journalEntryDAO.addJournalEntry(entryContent, title, mood, MainApp.currentUser.getId());
+
             if (success) {
                 showSaveConfirmation("Entry saved successfully!");
                 journalTextArea.clear();
                 if (titleField != null) titleField.clear();
                 if (moodSelector != null) moodSelector.setValue(null);
 
-                // Recharger les entrées récentes après la sauvegarde
+                // Recharger les entrées pour cet utilisateur
                 loadRecentEntries();
             } else {
                 showSaveError("Failed to save journal entry.");
@@ -511,15 +521,23 @@ public class JournalViewController {
 
     @FXML
     private void saveDraft() {
+        // Vérifier si un utilisateur est connecté
+        if (MainApp.currentUser == null) {
+            showSaveError("Please log in to save drafts.");
+            return;
+        }
+
         String entryContent = journalTextArea.getText().trim();
         String title = titleField != null ? titleField.getText().trim() : "";
         String mood = moodSelector != null ? moodSelector.getValue() : "";
 
-        boolean success = journalEntryDAO.addJournalEntryAsDraft(entryContent, title, mood);
+        // Passer l'ID de l'utilisateur actuel au DAO
+        boolean success = journalEntryDAO.addJournalEntryAsDraft(entryContent, title, mood, MainApp.currentUser.getId());
+
         if (success) {
             showSaveConfirmation("Draft saved successfully!");
 
-            // Recharger les entrées récentes après la sauvegarde
+            // Recharger les entrées pour cet utilisateur
             loadRecentEntries();
         } else {
             showSaveError("Failed to save draft.");
@@ -560,23 +578,32 @@ public class JournalViewController {
     @FXML
     private VBox recentEntriesContainer;
 
-    // Ajoutez cette méthode à l'intérieur de la méthode initialize()
     private void loadRecentEntries() {
         // Effacer les entrées existantes
-        recentEntriesContainer.getChildren().clear();
+        if (recentEntriesContainer != null) {
+            recentEntriesContainer.getChildren().clear();
 
-        // Récupérer les 3 dernières entrées
-        List<JournalEntry> recentEntries = journalEntryDAO.getRecentEntries(3);
+            if (MainApp.currentUser == null) {
+                // Si aucun utilisateur n'est connecté, afficher un message
+                Label noUserLabel = new Label("Please log in to view your journal entries.");
+                noUserLabel.setStyle("-fx-text-fill: #5f6368; -fx-font-style: italic;");
+                recentEntriesContainer.getChildren().add(noUserLabel);
+                return;
+            }
 
-        if (recentEntries.isEmpty()) {
-            Label noEntriesLabel = new Label("No journal entries yet. Start writing today!");
-            noEntriesLabel.setStyle("-fx-text-fill: #5f6368; -fx-font-style: italic;");
-            recentEntriesContainer.getChildren().add(noEntriesLabel);
-        } else {
-            // Ajouter chaque entrée récente à l'interface
-            for (JournalEntry entry : recentEntries) {
-                HBox entryCard = createEntryCard(entry);
-                recentEntriesContainer.getChildren().add(entryCard);
+            // Récupérer les 3 dernières entrées POUR L'UTILISATEUR ACTUEL
+            List<JournalEntry> recentEntries = journalEntryDAO.getRecentEntriesForUser(3, MainApp.currentUser.getId());
+
+            if (recentEntries.isEmpty()) {
+                Label noEntriesLabel = new Label("You haven't written any journal entries yet. Start writing today!");
+                noEntriesLabel.setStyle("-fx-text-fill: #5f6368; -fx-font-style: italic;");
+                recentEntriesContainer.getChildren().add(noEntriesLabel);
+            } else {
+                // Ajouter chaque entrée récente à l'interface
+                for (JournalEntry entry : recentEntries) {
+                    HBox entryCard = createEntryCard(entry);
+                    recentEntriesContainer.getChildren().add(entryCard);
+                }
             }
         }
     }
@@ -664,12 +691,16 @@ public class JournalViewController {
         return "📝"; // Emoji par défaut
     }
 
-    // Méthode pour voir les détails d'une entrée
     @FXML
     private void viewEntryDetails(int entryId) {
         try {
-            // Obtenir une référence à la scène actuelle à travers un élément FXML existant
-            // (ici on utilise journalTextArea qui est déjà défini dans votre classe)
+            // Vérifier si un utilisateur est connecté
+            if (MainApp.currentUser == null) {
+                showErrorAlert("Authentication Error", "Please log in to view entry details.");
+                return;
+            }
+
+            // Obtenir une référence à la scène actuelle
             Stage primaryStage = (Stage) journalTextArea.getScene().getWindow();
 
             // Changer vers la vue EntryDetailView.fxml
@@ -678,7 +709,12 @@ public class JournalViewController {
             // Récupérer le UserData de la scène qui contient le loader
             FXMLLoader loader = (FXMLLoader) primaryStage.getScene().getUserData();
             EntryDetailViewController controller = (EntryDetailViewController) loader.getController();
-            controller.setEntryId(entryId);
+
+            // Définir l'ID de l'entrée à visualiser
+            controller.setEntryId(entryId,currentUserId);
+
+            // Pas besoin de passer l'ID utilisateur car EntryDetailViewController
+            // peut accéder à MainApp.currentUser directement
         } catch (Exception e) {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Could not open entry details.");

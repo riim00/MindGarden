@@ -59,10 +59,23 @@ public class AllEntriesViewController {
     private JournalEntryDAO journalEntryDAO;
     private List<JournalEntry> allEntries;
     private List<JournalEntry> filteredEntries;
-
+    private int currentUserId;
     @FXML
     public void initialize() {
         journalEntryDAO = new JournalEntryDAO();
+
+        // Get current user ID from MainApp
+        if (MainApp.currentUser != null) {
+            currentUserId = MainApp.currentUser.getId();
+        } else {
+            // Redirect to login if no user is logged in
+            try {
+                MainApp.changeScene("login.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
 
         // Initialize mood filter options
         moodFilter.getItems().addAll(
@@ -83,7 +96,7 @@ public class AllEntriesViewController {
         moodFilter.setOnAction(e -> applyFilters());
         dateFilter.setOnAction(e -> applyFilters());
 
-        // Load all entries
+        // Load all entries for the current user
         loadAllEntries();
     }
 
@@ -94,8 +107,8 @@ public class AllEntriesViewController {
         // Clear the container first
         entriesContainer.getChildren().clear();
 
-        // Get all entries from the database
-        allEntries = journalEntryDAO.getAllEntries();
+        // Get all entries from the database FOR THE CURRENT USER
+        allEntries = journalEntryDAO.getAllEntries(currentUserId);
         filteredEntries = allEntries; // Initially, filtered entries are the same as all entries
 
         // Update the entries count label
@@ -345,7 +358,7 @@ public class AllEntriesViewController {
             // Get the UserData of the scene which contains the loader
             FXMLLoader loader = (FXMLLoader) primaryStage.getScene().getUserData();
             EntryDetailViewController controller = (EntryDetailViewController) loader.getController();
-            controller.setEntryId(entryId);
+            controller.setEntryId(entryId, currentUserId);
         } catch (Exception e) {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Could not open entry details.");
@@ -364,9 +377,15 @@ public class AllEntriesViewController {
             // Get the controller
             JournalEditorController controller = (JournalEditorController) MainApp.getController();
 
-            // Load the entry from database
+            // Load the entry from database with user ID verification
             JournalEntryDAO journalEntryDAO = new JournalEntryDAO();
-            JournalEntry entry = journalEntryDAO.getJournalEntryById(entryId);
+            JournalEntry entry = journalEntryDAO.getJournalEntryById(entryId, currentUserId);
+
+            if (entry == null) {
+                showErrorAlert("Access Denied", "You do not have permission to edit this entry.");
+                MainApp.changeScene("AllEntriesView.fxml");
+                return;
+            }
 
             // Set up controller for editing mode with the loaded entry
             controller.setEditMode(entry);
@@ -412,7 +431,7 @@ public class AllEntriesViewController {
      * Delete an entry from the database
      */
     private void deleteEntry(int entryId) {
-        boolean success = journalEntryDAO.deleteJournalEntry(entryId);
+        boolean success = journalEntryDAO.deleteJournalEntry(entryId, MainApp.currentUser.getId());
 
         if (success) {
             // Show success message

@@ -1,6 +1,7 @@
 package mindgarden.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
@@ -66,6 +67,7 @@ public class EntryDetailViewController {
     private JournalEntryDAO journalEntryDAO;
     private JournalEntry currentEntry;
     private int entryId;
+    private int currentUserId;
 
     /**
      * Initialize the controller
@@ -76,12 +78,19 @@ public class EntryDetailViewController {
     }
 
     /**
-     * Sets the entry ID and loads the entry details
-     * This method is called after the controller is initialized
-     * @param id The ID of the journal entry to display
+     * Set the entry ID to display
+     * @param id The ID of the entry to display
+     * @param userId The ID of the current user
      */
-    public void setEntryId(int id) {
+    public void setEntryId(int id, int userId) {
+        // Store the entry ID
         this.entryId = id;
+
+        // Store the current user ID
+        this.currentUserId = userId;
+
+        // Simply load the entry without permission verification
+        // since all entries displayed belong to the same user
         loadEntryDetails();
         loadRelatedEntries();
     }
@@ -90,7 +99,8 @@ public class EntryDetailViewController {
      * Loads the entry details from the database
      */
     private void loadEntryDetails() {
-        currentEntry = journalEntryDAO.getJournalEntryById(entryId);
+        // Load the entry directly without ownership verification
+        currentEntry = journalEntryDAO.getJournalEntryById(entryId, MainApp.currentUser.getId());
 
         if (currentEntry != null) {
             // Set title (or use "Untitled Entry" if empty)
@@ -110,16 +120,6 @@ public class EntryDetailViewController {
 
             // Set content
             contentLabel.setText(currentEntry.getContent());
-        } else {
-            // Handle case where entry couldn't be loaded
-            titleLabel.setText("Entry Not Found");
-            contentLabel.setText("The requested journal entry could not be found.");
-
-            // Disable buttons that require a valid entry
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
-            exportButton.setDisable(true);
-            shareButton.setDisable(true);
         }
     }
 
@@ -129,13 +129,14 @@ public class EntryDetailViewController {
     private void loadRelatedEntries() {
         // Clear existing related entries
         relatedEntriesContainer.getChildren().clear();
+        currentUserId = MainApp.currentUser.getId();
 
         if (currentEntry == null) {
             return;
         }
 
         // Get a few recent entries excluding the current one
-        List<JournalEntry> recentEntries = journalEntryDAO.getRecentEntries(4);
+        List<JournalEntry> recentEntries = journalEntryDAO.getRecentEntries(4, currentUserId);
 
         // Filter out current entry and keep only up to 3 entries
         int count = 0;
@@ -310,7 +311,7 @@ public class EntryDetailViewController {
         Optional<ButtonType> result = confirmDialog.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean success = journalEntryDAO.deleteJournalEntry(entryId);
+            boolean success = journalEntryDAO.deleteJournalEntry(entryId, MainApp.currentUser.getId());
 
             if (success) {
                 // Show success message
@@ -537,12 +538,16 @@ public class EntryDetailViewController {
      */
     private void viewEntryDetails(int entryId) {
         try {
-            // First change to the EntryDetailView scene
+            // Get a reference to the current stage through an existing FXML element
+            Stage primaryStage = (Stage) contentLabel.getScene().getWindow();
+
+            // Change to the EntryDetailView
             MainApp.changeScene("EntryDetailView.fxml");
 
-            // Then get the controller and set the entry ID
-            EntryDetailViewController controller = (EntryDetailViewController) MainApp.getController();
-            controller.setEntryId(entryId);
+            // Get the UserData of the scene which contains the loader
+            FXMLLoader loader = (FXMLLoader) primaryStage.getScene().getUserData();
+            EntryDetailViewController controller = (EntryDetailViewController) loader.getController();
+            controller.setEntryId(entryId, currentUserId);
         } catch (Exception e) {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Could not open entry details.");
