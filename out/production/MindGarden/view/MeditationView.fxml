@@ -9,12 +9,15 @@
 <?import java.lang.String?>
 
 
-
+<?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="mindgarden.controller.MeditationViewController"
             prefHeight="700.0" prefWidth="900.0"
             style="-fx-background-color: linear-gradient(to bottom, #e8f5e9, #ffffff);">
+    <stylesheets>
+        <URL value="@/style/meditation.css"/>
+    </stylesheets>
 
     <!-- Header -->
     <top>
@@ -205,7 +208,7 @@
                             <Label text="Ocean Waves"
                                    style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #0277bd;"/>
                             <Label text="5 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                            <Button text="Begin"
+                            <Button text="Begin"  onAction="#playOceanWaves" styleClass="begin-button"
                                     style="-fx-background-color: #e3f2fd; -fx-text-fill: #0277bd; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                         </VBox>
 
@@ -216,7 +219,7 @@
                             <Label text="Night Rest"
                                    style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #4527a0;"/>
                             <Label text="15 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                            <Button text="Begin"
+                            <Button text="Begin" onAction="#playNightRest" styleClass="begin-button"
                                     style="-fx-background-color: #ede7f6; -fx-text-fill: #4527a0; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                         </VBox>
 
@@ -227,7 +230,7 @@
                             <Label text="Inner Fire"
                                    style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #bf360c;"/>
                             <Label text="8 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                            <Button text="Begin"
+                            <Button text="Begin"  onAction="#playInnerFire" styleClass="begin-button"
                                     style="-fx-background-color: #ffebee; -fx-text-fill: #bf360c; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                         </VBox>
                     </HBox>
@@ -243,7 +246,7 @@
                                 <Label text="Mountain Strength"
                                        style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #5d4037;"/>
                                 <Label text="10 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                                <Button text="Begin"
+                                <Button text="Begin" onAction="#playMountainStrength" styleClass="begin-button"
                                         style="-fx-background-color: #efebe9; -fx-text-fill: #5d4037; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                             </VBox>
 
@@ -254,7 +257,7 @@
                                 <Label text="Mind Focus"
                                        style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #00838f;"/>
                                 <Label text="7 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                                <Button text="Begin"
+                                <Button text="Begin" onAction="#playMindFocus" styleClass="begin-button"
                                         style="-fx-background-color: #e0f7fa; -fx-text-fill: #00838f; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                             </VBox>
 
@@ -265,7 +268,7 @@
                                 <Label text="New Beginnings"
                                        style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #33691e;"/>
                                 <Label text="12 minutes" style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
-                                <Button text="Begin"
+                                <Button text="Begin" onAction="#playNewBeginnings" styleClass="begin-button"
                                         style="-fx-background-color: #e8f5e9; -fx-text-fill: #33691e; -fx-background-radius: 15; -fx-padding: 5 15;"/>
                             </VBox>
                         </HBox>
@@ -274,7 +277,7 @@
 
                     <Button fx:id="exploreButton"
                             text="↓ Explore More"
-                            onAction="#showMoreMeditations"
+                            onAction="#showMoreMeditations" styleClass="begin-button"
                             style="-fx-background-color: white;
                -fx-text-fill: #2e7d32;
                -fx-font-size: 14;

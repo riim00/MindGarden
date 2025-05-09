@@ -31,6 +31,20 @@ public class MeditationViewController {
     @FXML private Circle progressCircle;
     @FXML private VBox moreMeditationsBox;
     @FXML private Button exploreButton;
+    private String currentMeditation = null;
+    private boolean isPlaying = false;
+    private Thread autoStopThread = null;
+
+
+    private final Map<String, String> meditationSoundMap = Map.of(
+            "Ocean Waves", "/audio/sea-waves.mp3",
+            "Night Rest", "/audio/night-rest.mp3",
+            "Inner Fire", "/audio/Fire.mp3",
+            "Mountain Strength", "/audio/Wind.mp3",
+            "Mind Focus", "/audio/birds.mp3",
+            "New Beginnings", "/audio/new-beginnings.mp3"
+    );
+
 
     @FXML
     private ComboBox<String> backgroundSoundCombo;
@@ -55,6 +69,99 @@ public class MeditationViewController {
     private double totalDurationInSeconds;
 
 
+
+    private void playMeditationAudio(String title) {
+        // Si on clique sur le même titre → pause/reprise
+        if (currentMeditation != null && currentMeditation.equals(title)) {
+            if (mediaPlayer != null) {
+                if (isPlaying) {
+                    mediaPlayer.pause();
+                    isPlaying = false;
+                    System.out.println("⏸ Paused: " + title);
+                } else {
+                    mediaPlayer.play();
+                    isPlaying = true;
+                    System.out.println("▶ Resumed: " + title);
+                }
+            }
+            return;
+        }
+
+        // Sinon → nouvelle méditation
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        if (autoStopThread != null && autoStopThread.isAlive()) {
+            autoStopThread.interrupt();
+        }
+
+        String path = meditationSoundMap.get(title);
+        if (path != null) {
+            URL audioURL = getClass().getResource(path);
+            if (audioURL != null) {
+                Media media = new Media(audioURL.toString());
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                mediaPlayer.play();
+
+                currentMeditation = title;
+                isPlaying = true;
+
+                System.out.println("🎧 Playing: " + title);
+
+                // Auto-stop après 5 minutes
+                autoStopThread = new Thread(() -> {
+                    try {
+                        Thread.sleep(300000); // 5 minutes
+                        javafx.application.Platform.runLater(() -> {
+                            if (mediaPlayer != null && title.equals(currentMeditation)) {
+                                mediaPlayer.stop();
+                                currentMeditation = null;
+                                isPlaying = false;
+                                System.out.println("⏹ Auto-stopped after 5 minutes: " + title);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        System.out.println("🛑 Auto-stop cancelled for: " + title);
+                    }
+                });
+                autoStopThread.start();
+            } else {
+                System.err.println("❌ Audio not found: " + title);
+            }
+        }
+    }
+
+
+    @FXML
+    private void playOceanWaves() {
+        playMeditationAudio("Ocean Waves");
+    }
+
+    @FXML
+    private void playNightRest() {
+        playMeditationAudio("Night Rest");
+    }
+
+    @FXML
+    private void playInnerFire() {
+        playMeditationAudio("Inner Fire");
+    }
+
+    @FXML
+    private void playMountainStrength() {
+        playMeditationAudio("Mountain Strength");
+    }
+
+    @FXML
+    private void playMindFocus() {
+        playMeditationAudio("Mind Focus");
+    }
+
+    @FXML
+    private void playNewBeginnings() {
+        playMeditationAudio("New Beginnings");
+    }
 
 
     private void setupHoverEffect(Button button) {
