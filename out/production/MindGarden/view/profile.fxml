@@ -21,6 +21,16 @@
         </effect>
     </Rectangle>
 
+    <Button text="← Back"
+            onAction="#goBack"
+            AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
+            style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-cursor: hand;">
+        <effect>
+            <DropShadow color="#00000044" radius="2" spread="0.2"/>
+        </effect>
+    </Button>
+
+
     <!-- Main Content -->
     <VBox spacing="18" alignment="TOP_CENTER"
           AnchorPane.topAnchor="40" AnchorPane.leftAnchor="40" AnchorPane.rightAnchor="40"

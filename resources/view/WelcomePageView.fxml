@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="mindgarden.controller.WelcomeController"
+            prefHeight="700.0" prefWidth="900.0"
+            style="-fx-background-color: linear-gradient(to bottom, #e6f7e9, #ffffff);">
+
+    <!-- Main Content Section -->
+    <center>
+        <VBox alignment="CENTER" spacing="40" style="-fx-padding: 20;">
+            <!-- App Logo and Name -->
+            <VBox alignment="CENTER" spacing="10">
+                <Text text="🌱" style="-fx-font-size: 80;"/>
+                <Label text="MindGarden" style="-fx-font-size: 48; -fx-font-weight: bold; -fx-text-fill: #2e7d32;">
+                    <font>
+                        <Font name="Verdana Bold" size="48.0"/>
+                    </font>
+                    <effect>
+                        <DropShadow color="#cccccc" radius="2" spread="0.1"/>
+                    </effect>
+                </Label>
+                <Label text="Nurture your mental wellbeing"
+                       style="-fx-font-size: 20; -fx-text-fill: #5f6368; -fx-font-style: italic;"/>
+            </VBox>
+
+            <!-- Features Highlight -->
+            <HBox alignment="CENTER" spacing="30">
+                <VBox alignment="CENTER" spacing="10"
+                      style="-fx-background-color: rgba(168, 230, 207, 0.5); -fx-background-radius: 15; -fx-padding: 15;">
+                    <Label text="😊" style="-fx-font-size: 32;"/>
+                    <Label text="Track Mood" style="-fx-font-weight: bold; -fx-text-fill: #1565c0;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="10"
+                      style="-fx-background-color: rgba(168, 230, 207, 0.5); -fx-background-radius: 15; -fx-padding: 15;">
+                    <Label text="📓" style="-fx-font-size: 32;"/>
+                    <Label text="Daily Journal" style="-fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="10"
+                      style="-fx-background-color: rgba(168, 230, 207, 0.5); -fx-background-radius: 15; -fx-padding: 15;">
+                    <Label text="🧘" style="-fx-font-size: 32;"/>
+                    <Label text="Meditation" style="-fx-font-weight: bold; -fx-text-fill: #c2185b;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="10"
+                      style="-fx-background-color: rgba(168, 230, 207, 0.5); -fx-background-radius: 15; -fx-padding: 15;">
+                    <Label text="🎯" style="-fx-font-size: 32;"/>
+                    <Label text="Set Goals" style="-fx-font-weight: bold; -fx-text-fill: #7b1fa2;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Login/Signup Buttons -->
+            <VBox alignment="CENTER" spacing="15"
+                  style="-fx-background-color: rgba(255,255,255,0.7); -fx-background-radius: 15; -fx-padding: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);"
+                  maxWidth="400">
+                <Label text="Begin Your Wellness Journey"
+                       style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                <Label text="Start tracking your mental wellbeing today"
+                       style="-fx-font-size: 14; -fx-text-fill: #5f6368;"/>
+
+                <Button text="Sign Up" onAction="#navigateToSignUp"
+                        prefWidth="200" prefHeight="50"
+                        style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 25; -fx-font-size: 16; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
+                    </effect>
+                </Button>
+
+                <Button text="Log In" onAction="#navigateToLogin"
+                        prefWidth="200" prefHeight="50"
+                        style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 25; -fx-font-size: 16; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <effect>
+                        <DropShadow color="#bbdefb" radius="5" spread="0.1"/>
+                    </effect>
+                </Button>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="30"
+              style="-fx-background-color: linear-gradient(to right, #a8e6cf, #dcedc1); -fx-padding: 15;">
+            <Label text="Take care of your mind, and watch it grow"
+                   style="-fx-font-size: 14; -fx-font-style: italic; -fx-text-fill: #2e7d32;"/>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="About" styleClass="footer-link" onAction="#openAbout"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+                <Button text="Privacy" styleClass="footer-link" onAction="#openPrivacy"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+                <Button text="Contact" styleClass="footer-link" onAction="#openContact"
+                        style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-underline: true; -fx-font-size: 12;" />
+            </HBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="MindGarden © 2025"
+                   style="-fx-font-size: 12; -fx-text-fill: #5f6368;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

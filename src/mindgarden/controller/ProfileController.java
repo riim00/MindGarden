@@ -25,4 +25,14 @@ public class ProfileController {
         MainApp.currentUser = null;
         MainApp.changeScene("login.fxml");
     }
+
+    @FXML
+    private void goBack() {
+        try {
+            mindgarden.MainApp.changeScene("HomeView.fxml"); // changez selon le nom réel de votre fichier FXML
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

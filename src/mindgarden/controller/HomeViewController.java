@@ -12,7 +12,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import mindgarden.MainApp;
 import mindgarden.db.GoalDAO;
+import mindgarden.db.TipDAO;
 import mindgarden.model.Goal;
+import mindgarden.model.Tip;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +36,8 @@ public class HomeViewController {
 
     @FXML private Label goal1Label;
     @FXML private Label goal2Label;
+    @FXML private Label tipContentLabel;
+
 
     public void loadWeeklyGoals() {
         int userId = MainApp.currentUser.getId(); // supposé que MainApp.currentUser existe
@@ -76,10 +80,17 @@ public class HomeViewController {
         System.out.println("Contact clicked");
     }
 
+    private List<Tip> tips;
+    private int currentTipIndex = 0;
+
     @FXML
     private void getNextTip() {
-        System.out.println("Next tip requested");
+        if (tips != null && !tips.isEmpty()) {
+            currentTipIndex = (currentTipIndex + 1) % tips.size();
+            tipContentLabel.setText(tips.get(currentTipIndex).getContent());
+        }
     }
+
 
     @FXML
     private void openGoalSetting() {
@@ -118,6 +129,11 @@ public class HomeViewController {
         updateUserInitials();
         addProfileTooltip();
         loadWeeklyGoals();
+        tips = TipDAO.getAllTips();
+        if (!tips.isEmpty()) {
+            tipContentLabel.setText(tips.get(currentTipIndex).getContent());
+        }
+
     }
 
     private void updateUserInitials() {

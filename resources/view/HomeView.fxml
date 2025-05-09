@@ -194,10 +194,10 @@
                             <Label text="✨" style="-fx-font-size: 24;"/>
                             <Label text="Today's Wellness Tip" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ff6f00;"/>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button text="Next Tip" onAction="#getNextTip"
+                            <Button text="Next Tip"  onAction="#getNextTip"
                                     style="-fx-background-color: transparent; -fx-text-fill: #ff6f00; -fx-font-size: 12;" />
                         </HBox>
-                        <Label text="Take a moment to breathe deeply. Inhale for 4 counts, hold for 4, and exhale for 6. This simple exercise can help reduce stress and increase focus."
+                        <Label fx:id="tipContentLabel"
                                wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
                     </VBox>
 
