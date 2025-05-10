@@ -153,7 +153,7 @@ public class HomeViewController {
         applyHoverAnimation(MoodBT);
         applyHoverAnimation(JournalBT);
         applyHoverAnimation(TipBT);
-        applyHoverAnimation(Settings);
+
 
     }
 
