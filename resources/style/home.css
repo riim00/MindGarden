@@ -12,3 +12,9 @@
     -fx-scale-y: 1.03;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 15, 0, 0, 4);
 }
+
+#setGoalButton:hover {
+    -fx-background-color: #7e57c2;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -18,6 +19,20 @@ import mindgarden.model.Tip;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import javafx.animation.ScaleTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.animation.ScaleTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+import javafx.scene.layout.Pane;
 
 public class HomeViewController {
 
@@ -54,16 +69,7 @@ public class HomeViewController {
 
 
 
-    @FXML
-    private void openSettings() {
-        // À personnaliser : pour l’instant, on peut juste afficher un log
-        System.out.println("Settings button clicked");
-    }
 
-    @FXML
-    private void openHelp() {
-        System.out.println("Help button clicked");
-    }
 
     @FXML
     private void openAbout() {
@@ -112,6 +118,14 @@ public class HomeViewController {
     @FXML private StackPane profileIcon;
     @FXML private Text profileInitials;
     @FXML private Circle profileCircle;
+    @FXML private Button setGoalButton;
+    @FXML private Button SessionBT;
+    @FXML private Button JournalBT;
+    @FXML private Button MoodBT;
+    @FXML private Button TipBT;
+    @FXML private Button Settings;
+
+
 
 
 
@@ -134,7 +148,35 @@ public class HomeViewController {
             tipContentLabel.setText(tips.get(currentTipIndex).getContent());
         }
 
+        applyHoverAnimation(setGoalButton);
+        applyHoverAnimation(SessionBT);
+        applyHoverAnimation(MoodBT);
+        applyHoverAnimation(JournalBT);
+        applyHoverAnimation(TipBT);
+        applyHoverAnimation(Settings);
+
     }
+
+    private void applyHoverAnimation(Button button) {
+        button.setOnMouseEntered(e -> {
+            button.setEffect(new DropShadow(15, Color.web("#b39ddb")));
+            ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
+            st.setToX(1.1);
+            st.setToY(1.1);
+            st.play();
+        });
+
+        button.setOnMouseExited(e -> {
+            button.setEffect(new DropShadow(5, Color.web("#d1c4e9")));
+            ScaleTransition st = new ScaleTransition(Duration.millis(200), button);
+            st.setToX(1.0);
+            st.setToY(1.0);
+            st.play();
+        });
+    }
+
+
+
 
     private void updateUserInitials() {
         if (MainApp.currentUser != null) {

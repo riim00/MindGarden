@@ -40,10 +40,7 @@
                 </Label>
                 <Region HBox.hgrow="ALWAYS" />
                 <HBox spacing="20" alignment="CENTER_RIGHT">
-                    <Button text="Settings" styleClass="nav-button" onAction="#openSettings"
-                            style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
-                    <Button text="Help" styleClass="nav-button" onAction="#openHelp"
-                            style="-fx-background-color: transparent; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" />
+
                     <StackPane fx:id="profileIcon"
                                onMouseClicked="#openProfile"
                                onMouseEntered="#onHoverProfile"
@@ -109,7 +106,7 @@
                                   style="-fx-pie-label-visible: false; -fx-background-color: transparent;" />
 
                         <Region VBox.vgrow="ALWAYS" />
-                        <Button text="Open Tracker" onAction="#openMoodTracker"
+                        <Button fx:id="MoodBT" text="Open Tracker" onAction="#openMoodTracker"
                                 style="-fx-background-color: #1976d2; -fx-text-fill: white; -fx-background-radius: 20;
                    -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
@@ -139,7 +136,7 @@
                         <Region VBox.vgrow="ALWAYS" />
 
 
-                        <Button text="Open Journal" onAction="#openJournal"
+                        <Button fx:id="JournalBT" text="Open Journal" onAction="#openJournal"
                                 style="-fx-background-color: #43a047; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
                                 <DropShadow color="#c8e6c9" radius="5" spread="0.1"/>
@@ -175,7 +172,7 @@
                         <Region VBox.vgrow="ALWAYS" />
 
 
-                        <Button text="Start Session" onAction="#openMeditation"
+                        <Button fx:id="SessionBT" text="Start Session" onAction="#openMeditation"
                                 style="-fx-background-color: #ec407a; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 30; -fx-font-weight: bold; -fx-cursor: hand;">
                             <effect>
                                 <DropShadow color="#f8bbd0" radius="5" spread="0.1"/>
@@ -193,8 +190,8 @@
                             <Label text="✨" style="-fx-font-size: 24;"/>
                             <Label text="Today's Wellness Tip" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ff6f00;"/>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button text="Next Tip"  onAction="#getNextTip"
-                                    style="-fx-background-color: transparent; -fx-text-fill: #ff6f00; -fx-font-size: 12;" />
+                            <Button fx:id="TipBT" text="Next Tip"  onAction="#getNextTip"
+                                    style="-fx-background-color: transparent; -fx-text-fill: #ff6f00; -fx-font-size: 12; -fx-cursor: hand;" />
                         </HBox>
                         <Label fx:id="tipContentLabel"
                                wrapText="true" textAlignment="CENTER" style="-fx-text-fill: #5f6368;"/>
@@ -258,7 +255,7 @@
                         </VBox>
 
                         <Button fx:id="setGoalButton" text="Set New Goal" onAction="#openGoalSetting"
-                                style="-fx-background-color: #9575cd; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15;">
+                                style="-fx-cursor: hand; -fx-background-color: #9575cd; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 15;">
                             <effect>
                                 <DropShadow color="#d1c4e9" radius="5" spread="0.1"/>
                             </effect>
